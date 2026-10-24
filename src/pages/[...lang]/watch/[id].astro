@@ -1,0 +1,194 @@
+---
+import Base from '../../../layouts/Base.astro';
+import VideoCard from '../../../components/VideoCard.astro';
+import Player from '../../../components/Player.astro';
+import type { Lang } from '../../../data/categories';
+import { CAT, CATEGORIES } from '../../../data/categories';
+import { VIDEOS, title, thumb, shareImage, byCat, meta, formatViews, formatDate, formatDuration, cleanDesc } from '../../../data/videos';
+import { tr, num, href } from '../../../i18n/ui';
+import { SITE } from '../../../config';
+import Comments from '../../../components/Comments.astro';
+
+export function getStaticPaths() {
+  return [undefined, 'en'].flatMap((lang) => VIDEOS.map((v) => ({ params: { lang, id: v.id } })));
+}
+const lang: Lang = Astro.params.lang === 'en' ? 'en' : 'bn';
+const t = tr(lang);
+const v = VIDEOS.find((x) => x.id === Astro.params.id)!;
+const c = CAT[v.cat];
+const series = byCat(v.cat);
+const idx = series.findIndex((x) => x.id === v.id);
+const prev = series[idx - 1];
+const next = series[idx + 1];
+// Suggestions from neighbouring topics of the same shelf.
+const sameShelf = CATEGORIES.filter((x) => x.shelf === c.shelf && x.id !== v.cat);
+const also = sameShelf
+  .map((x, i) => {
+    const list = byCat(x.id);
+    return list[(idx + i) % list.length];
+  })
+  .slice(0, 3);
+// Topics with few neighbours: fill up from later videos of the same topic.
+for (let k = 1; also.length < 3 && k < series.length; k++) {
+  const extra = series[(idx + k) % series.length];
+  if (extra.id !== v.id && !also.includes(extra)) also.push(extra);
+}
+const pageUrl = new URL(href(lang, `watch/${v.id}`), SITE.url).href;
+const yt = `https://www.youtube.com/watch?v=${v.id}`;
+const m = meta(v.id);
+const desc = cleanDesc(m?.desc ?? '');
+const dig = (x: string) => (lang === 'bn' ? x.replace(/\d/g, (d) => '০১২৩৪৫৬৭৮৯'[+d]) : x);
+const rest = m ? [formatDate(m.date, lang), dig(formatDuration(m.secs))].filter(Boolean) : [];
+---
+<Base lang={lang} path={`watch/${v.id}`} nav="videos" title={title(v, lang)} description={desc ? desc.split('\n')[0].slice(0, 200) : `${title(v, lang)} · ${c[lang]}`} image={shareImage(v.id).url} imageSize={shareImage(v.id).size}>
+  <div class="wrap watch">
+    <nav class="crumbs" aria-label={t.breadcrumb}>
+      <a href={href(lang)}>{t.nav.home}</a> <span aria-hidden="true">/</span>
+      <a href={href(lang, 'videos') + `?cat=${v.cat}`}>{c[lang]}</a>
+    </nav>
+
+    <div class="layout">
+      <article class="main-col">
+        <Player id={v.id} name={title(v, lang)} lang={lang} bg={c.ink} />
+
+        <div class="meta">
+          <a class="pill" href={href(lang, 'videos') + `?cat=${v.cat}`} style={`color:${c.ink};background:${c.bg}`}>{c[lang]}</a>
+          <h1>{title(v, lang)}</h1>
+          {m && (
+            <p class="stats">
+              <span id="live-views">{formatViews(m.views, lang)}</span>
+              <span id="live-comments" hidden></span>
+              {rest.map((x) => <span>{x}</span>)}
+            </p>
+          )}
+        </div>
+
+        <div class="share" data-url={pageUrl}>
+          <button type="button" class="sbtn" id="copy" data-done={t.copied}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" /></svg>
+            <span id="copy-label">{t.copyLink}</span>
+          </button>
+          <a class="sbtn" href={`https://wa.me/?text=${encodeURIComponent(title(v, lang) + ' ' + pageUrl)}`} rel="noopener" target="_blank">{t.shareWhatsApp}</a>
+          <a class="sbtn" href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`} rel="noopener" target="_blank">{t.shareFacebook}</a>
+          <a class="sbtn plain" href={yt} rel="noopener" target="_blank">{t.watchOnYoutube}</a>
+        </div>
+
+        {desc && (
+          <section class="about-video" aria-labelledby="av-h">
+            <h2 id="av-h">{t.aboutVideo}</h2>
+            <p>{desc}</p>
+          </section>
+        )}
+
+        <div class="ask">
+          <div>
+            <p class="ask-title">{t.questionTitle}</p>
+            <p>{t.questionBody}</p>
+          </div>
+          <a class="btn" href={href(lang, 'contact') + `?v=${v.id}`}>{t.sendQuestion}</a>
+        </div>
+
+        <Comments id={v.id} lang={lang} />
+
+        {(prev || next) && (
+          <nav class="pn" aria-label={c[lang]}>
+            {prev ? <a href={href(lang, `watch/${prev.id}`)}><span class="muted">{t.prev}</span><span>{title(prev, lang)}</span></a> : <span></span>}
+            {next ? <a class="r" href={href(lang, `watch/${next.id}`)}><span class="muted">{t.next}</span><span>{title(next, lang)}</span></a> : <span></span>}
+          </nav>
+        )}
+
+        <section class="also" aria-labelledby="also-h">
+          <h2 id="also-h">{t.alsoUseful}</h2>
+          <div class="vgrid">
+            {also.map((a) => <VideoCard v={a} lang={lang} />)}
+          </div>
+        </section>
+      </article>
+
+      <aside class="side" aria-labelledby="side-h">
+        <div class="side-head">
+          <h2 id="side-h">{t.moreInTopic}</h2>
+          <span class="muted small">{num(idx + 1, lang)} / {num(series.length, lang)}</span>
+        </div>
+        <ol class="series">
+          {series.map((s) => (
+            <li>
+              <a href={href(lang, `watch/${s.id}`)} aria-current={s.id === v.id ? 'true' : undefined} class={s.id === v.id ? 'cur' : ''}>
+                <span class="mini"><img src={thumb(s.id)} alt="" width="132" height="99" loading="lazy" /></span>
+                <span class="mt"><span class="mtitle">{title(s, lang)}</span>{s.id === v.id && <span class="muted small">{t.nowWatching}</span>}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+        <a class="more" href={href(lang, 'videos') + `?cat=${v.cat}`}>{t.allInTopic(c[lang])}</a>
+
+      </aside>
+    </div>
+
+  </div>
+
+  <script>
+    const btn = document.getElementById('copy') as HTMLButtonElement | null;
+    btn?.addEventListener('click', async () => {
+      const url = (btn.closest('.share') as HTMLElement).dataset.url!;
+      try { await navigator.clipboard.writeText(url); } catch { const i = document.createElement('input'); i.value = url; document.body.appendChild(i); i.select(); document.execCommand('copy'); i.remove(); }
+      const label = document.getElementById('copy-label')!;
+      const orig = label.textContent;
+      label.textContent = btn.dataset.done!;
+      setTimeout(() => (label.textContent = orig), 2000);
+    });
+  </script>
+</Base>
+
+<style>
+  .watch { padding-top: 24px; padding-bottom: 32px; display: flex; flex-direction: column; gap: 24px; }
+  .crumbs { font-size: 15px; color: var(--ink-3); }
+  .layout { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+  .main-col { flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+  .meta { display: flex; flex-direction: column; gap: 8px; }
+  .pill { align-self: flex-start; font-size: 14px; font-weight: 600; padding: 4px 12px; border-radius: 999px; text-decoration: none; }
+  .meta h1 { font-size: clamp(26px, 3.2vw, 38px); line-height: 1.35; letter-spacing: 0; }
+  .stats { font-size: 15px; color: var(--ink-3); display: flex; flex-wrap: wrap; }
+  .stats > span + span::before { content: '·'; margin: 0 8px; }
+  .about-video { padding: 24px 28px; background: #fff; border: 1px solid var(--line); border-radius: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .about-video h2 { font-size: 22px; line-height: 1.4; }
+  .about-video p { max-width: 40em; white-space: pre-line; }
+  .share { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sbtn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid #cfcac0; background: #fff; border-radius: 10px; font-size: 15px; font-weight: 600; color: var(--ink); text-decoration: none; cursor: pointer; }
+  .sbtn:hover { background: var(--sand); color: var(--ink); }
+  .sbtn.plain { border-color: transparent; background: none; color: var(--teal); }
+  .ask { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 24px 28px; background: var(--teal-tint); border-radius: 14px; }
+  .ask > div { flex: 1 1 320px; display: flex; flex-direction: column; gap: 4px; }
+  .ask-title { font-size: 20px; font-weight: 700; color: #0b4a44; }
+  .ask p:not(.ask-title) { font-size: 16px; color: #24524d; }
+  .pn { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+  .pn a { flex: 1 1 260px; display: flex; flex-direction: column; gap: 2px; padding: 14px 18px; border: 1px solid var(--line); border-radius: 12px; background: #fff; text-decoration: none; color: var(--ink); font-weight: 600; font-size: 16px; line-height: 1.5; }
+  .pn a:hover { border-color: var(--teal); }
+  .pn a.r { text-align: right; }
+  .pn .muted { font-size: 13px; font-weight: 500; }
+  .pn > span:empty { display: none; }
+  .side { flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 16px; position: sticky; top: 16px; max-height: calc(100vh - 32px); }
+  .side-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .side-head h2 { font-size: 20px; }
+  .small { font-size: 14px; }
+  .series { display: flex; flex-direction: column; gap: 4px; overflow-y: auto; min-height: 0; }
+  .series a { display: flex; gap: 12px; align-items: flex-start; padding: 10px; border-radius: 12px; text-decoration: none; color: var(--ink); }
+  .series a:hover { background: var(--sand); }
+  .series a.cur { background: #e3eef6; outline: 1.5px solid #1f4a68; }
+  .mini { flex: 0 0 132px; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; background: var(--sand); }
+  .mini img { width: 100%; height: 100%; object-fit: cover; }
+  .mt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .mtitle { font-size: 16px; font-weight: 600; line-height: 1.45; }
+  .more { font-weight: 600; font-size: 16px; padding: 8px 0; }
+  .also { display: flex; flex-direction: column; gap: 20px; padding-top: 16px; }
+  .also .vgrid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .also h2 { font-size: 26px; }
+  @media (max-width: 640px) {
+    .watch { padding-top: 0; gap: 16px; }
+    .crumbs { display: none; }
+    .mini { flex-basis: 112px; }
+    .ask { padding: 18px; }
+    .side { position: static; max-height: none; }
+    .series { max-height: 520px; }
+  }
+</style>

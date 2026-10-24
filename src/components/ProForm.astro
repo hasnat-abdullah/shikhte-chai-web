@@ -1,0 +1,132 @@
+---
+// Fields shared by the public "request to be listed" form and the admin editor.
+import type { Lang } from '../data/categories';
+import { TYPES, SPECIALIZATIONS, MODES, LANGUAGES, AGES, DISTRICTS, DIVISIONS, DIVISION_NAMES, BIO_MAX } from '../data/professionals';
+import { PR } from '../i18n/pros';
+interface Props { lang: Lang; admin?: boolean }
+const { lang, admin = false } = Astro.props;
+const p = PR[lang];
+const f = (k: string) => p.f[k] as [string, string];
+const num = (n: number) => (lang === 'bn' ? String(n).replace(/\d/g, (d) => '০১২৩৪৫৬৭৮৯'[+d]) : String(n));
+---
+<div class="pf">
+  <fieldset>
+    <legend>{p.sAbout}</legend>
+    <div class="row2">
+      <div class="field"><label for="pf-name">{f('name')[0]} <span class="req">*</span></label><input id="pf-name" name="name" type="text" maxlength="120" autocomplete="name" /><p class="hint">{f('name')[1]}</p><p class="err" data-err="name" hidden></p></div>
+      <div class="field"><label for="pf-name_en">{f('name_en')[0]}</label><input id="pf-name_en" name="name_en" type="text" maxlength="120" /><p class="err" data-err="name_en" hidden></p></div>
+    </div>
+    <div class="field">
+      <span class="lbl" id="pf-type-l">{f('type')[0]} <span class="req">*</span></span>
+      <div class="opts" role="radiogroup" aria-labelledby="pf-type-l">
+        {TYPES.map((t) => (<label class="opt"><input type="radio" name="type" value={t.value} /><span><strong>{t[lang]}</strong>{t.hint && <small>{t.hint[lang]}</small>}</span></label>))}
+      </div>
+      <p class="err" data-err="type" hidden></p>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="pf-designation">{f('designation')[0]}</label><input id="pf-designation" name="designation" type="text" maxlength="160" /><p class="hint">{f('designation')[1]}</p></div>
+      <div class="field"><label for="pf-qualifications">{f('qualifications')[0]} <span class="req">*</span></label><input id="pf-qualifications" name="qualifications" type="text" maxlength="200" /><p class="hint">{f('qualifications')[1]}</p><p class="err" data-err="qualifications" hidden></p></div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>{p.sPractice}</legend>
+    <div class="field">
+      <span class="lbl" id="pf-spec-l">{f('specializations')[0]} <span class="req">*</span></span>
+      <div class="chips-check" role="group" aria-labelledby="pf-spec-l">
+        {SPECIALIZATIONS.map((s) => (<label class="cc"><input type="checkbox" name="specializations" value={s.value} /><span>{s[lang]}</span></label>))}
+      </div>
+      <p class="err" data-err="specializations" hidden></p>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <span class="lbl" id="pf-modes-l">{f('modes')[0]} <span class="req">*</span></span>
+        <div class="chips-check" role="group" aria-labelledby="pf-modes-l">
+          {MODES.map((m) => (<label class="cc"><input type="checkbox" name="modes" value={m.value} /><span>{m[lang]}</span></label>))}
+        </div>
+        <p class="err" data-err="modes" hidden></p>
+      </div>
+      <div class="field">
+        <span class="lbl" id="pf-lang-l">{f('languages')[0]} <span class="req">*</span></span>
+        <div class="chips-check" role="group" aria-labelledby="pf-lang-l">
+          {LANGUAGES.map((m) => (<label class="cc"><input type="checkbox" name="languages" value={m.value} /><span>{m[lang]}</span></label>))}
+        </div>
+        <p class="err" data-err="languages" hidden></p>
+      </div>
+    </div>
+    <div class="field">
+      <span class="lbl" id="pf-ages-l">{f('ages')[0]}</span>
+      <div class="chips-check" role="group" aria-labelledby="pf-ages-l">
+        {AGES.map((m) => (<label class="cc"><input type="checkbox" name="ages" value={m.value} /><span>{m[lang]}</span></label>))}
+      </div>
+    </div>
+    <div class="field">
+      <label for="pf-bio">{f('bio')[0]} <span class="req">*</span></label>
+      <textarea id="pf-bio" name="bio" rows="4" maxlength={BIO_MAX} aria-describedby="pf-bio-h"></textarea>
+      <p class="hint" id="pf-bio-h">{f('bio')[1]} <span class="count" data-count="bio" data-max={BIO_MAX}>{num(0)}/{num(BIO_MAX)}</span></p>
+      <p class="err" data-err="bio" hidden></p>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>{p.sLocation}</legend>
+    <div class="row2">
+      <div class="field">
+        <label for="pf-district">{f('district')[0]} <span class="req">*</span></label>
+        <select id="pf-district" name="district">
+          <option value="">{p.choose}</option>
+          {DIVISIONS.map((dv) => (<optgroup label={DIVISION_NAMES[dv][lang]}>{DISTRICTS.filter((d) => d.division === dv).map((d) => (<option value={d.value}>{d[lang]}</option>))}</optgroup>))}
+        </select>
+        <p class="err" data-err="district" hidden></p>
+      </div>
+      <div class="field"><label for="pf-area">{f('area')[0]}</label><input id="pf-area" name="area" type="text" maxlength="120" /><p class="hint">{f('area')[1]}</p></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="pf-clinic">{f('clinic_name')[0]}</label><input id="pf-clinic" name="clinic_name" type="text" maxlength="160" /></div>
+      <div class="field"><label for="pf-address">{f('address')[0]}</label><input id="pf-address" name="address" type="text" maxlength="300" /><p class="hint">{f('address')[1]}</p><p class="err" data-err="address" hidden></p></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="pf-fee">{f('fee_note')[0]}</label><input id="pf-fee" name="fee_note" type="text" maxlength="120" /><p class="hint">{f('fee_note')[1]}</p></div>
+      <div class="field"><label for="pf-avail">{f('availability')[0]}</label><input id="pf-avail" name="availability" type="text" maxlength="160" /><p class="hint">{f('availability')[1]}</p></div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>{p.sContact}</legend>
+    <div class="row2">
+      <div class="field"><label for="pf-phone">{f('phone')[0]} <span class="req">*</span></label><input id="pf-phone" name="phone" type="tel" maxlength="30" autocomplete="tel" /><p class="err" data-err="phone" hidden></p></div>
+      <div class="field"><label for="pf-email_public">{f('email_public')[0]}</label><input id="pf-email_public" name="email_public" type="email" maxlength="160" /><p class="err" data-err="email_public" hidden></p></div>
+    </div>
+    <div class="field"><label for="pf-website">{f('website')[0]}</label><input id="pf-website" name="website" type="url" maxlength="300" /><p class="hint">{f('website')[1]}</p><p class="err" data-err="website" hidden></p></div>
+  </fieldset>
+
+  <fieldset class="private" data-verify-box>
+    <legend>{p.sPrivate}</legend>
+    <p class="hint reg-wait">{p.pickTypeFirst}</p>
+    <div class="field reg-psy" hidden><label for="pf-reg">{f('registration_no')[0]} <span class="req">*</span></label><input id="pf-reg" name="registration_no" type="text" maxlength="80" /><p class="hint">{f('registration_no')[1]}</p><p class="err" data-err="registration_no" hidden></p></div>
+    <div class="field reg-other" hidden><label for="pf-cred">{f('credentials_note')[0]} <span class="req">*</span></label><textarea id="pf-cred" name="credentials_note" rows="3" maxlength="600"></textarea><p class="hint">{f('credentials_note')[1]}</p><p class="err" data-err="credentials_note" hidden></p></div>
+    <div class="field"><label for="pf-semail">{f('submitter_email')[0]} <span class="req">*</span></label><input id="pf-semail" name="submitter_email" type="email" maxlength="160" autocomplete="email" /><p class="hint">{f('submitter_email')[1]}</p><p class="err" data-err="submitter_email" hidden></p></div>
+  </fieldset>
+
+  {admin && (
+    <fieldset class="adminbox">
+      <legend>Admin</legend>
+      <div class="row2">
+        <div class="field"><label for="pf-status">Status</label>
+          <select id="pf-status" name="status"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select>
+          <p class="hint">Approving or rejecting emails the professional automatically, if email is set up.</p>
+        </div>
+        <div class="field"><label for="pf-reason">Reason (included in the rejection email)</label><input id="pf-reason" name="rejection_reason" type="text" maxlength="1000" /></div>
+      </div>
+      <div class="field"><label for="pf-verified">What you have checked (shown as a badge on the public card)</label>
+        <select id="pf-verified" name="verified">
+          <option value="none">Nothing checked yet</option>
+          <option value="registration">BM&amp;DC registration checked (psychiatrists)</option>
+          <option value="credentials">Training and credentials checked (others)</option>
+        </select>
+        <p class="hint">Only choose "registration" after you have matched the number on the BM&amp;DC register. Choose "credentials" only after seeing certificates or confirming with the institution or association.</p>
+      </div>
+      <div class="field"><label for="pf-note">Internal note (never public)</label><textarea id="pf-note" name="admin_note" rows="2" maxlength="2000"></textarea></div>
+    </fieldset>
+  )}
+</div>

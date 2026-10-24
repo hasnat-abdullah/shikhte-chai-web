@@ -1,0 +1,20 @@
+---
+import type { Lang } from '../data/categories';
+import { CAT } from '../data/categories';
+import { thumb, title, meta, formatDuration, formatViews, type Video } from '../data/videos';
+import { href } from '../i18n/ui';
+interface Props { v: Video; lang: Lang; showCat?: boolean; eager?: boolean; showViews?: boolean }
+const { v, lang, showCat = true, eager = false, showViews = false } = Astro.props;
+const c = CAT[v.cat];
+const dur = formatDuration(meta(v.id)?.secs ?? 0);
+---
+<a class="vcard" href={href(lang, `watch/${v.id}`)}>
+  <div class="vthumb" style={`background:${c.bg}`}>
+    <img src={thumb(v.id)} alt="" width="480" height="360" loading={eager ? 'eager' : 'lazy'} decoding="async" style="aspect-ratio:16/9;object-fit:cover;height:100%" />
+    {dur && <span class="vdur">{lang === 'bn' ? dur.replace(/\d/g, (d) => '০১২৩৪৫৬৭৮৯'[+d]) : dur}</span>}
+    <span class="vplay"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill={c.ink} /></svg></span>
+  </div>
+  {showCat && <span class="vcat" style={`color:${c.ink}`}>{c[lang]}</span>}
+  <span class="vtitle">{title(v, lang)}</span>
+  {showViews && meta(v.id) && <span class="vsub vviews">{formatViews(meta(v.id)!.views, lang)}</span>}
+</a>

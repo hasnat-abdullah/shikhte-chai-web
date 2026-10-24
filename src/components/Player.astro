@@ -1,0 +1,42 @@
+---
+import type { Lang } from '../data/categories';
+import { thumb } from '../data/videos';
+import { tr } from '../i18n/ui';
+interface Props { id: string; name: string; lang: Lang; bg?: string }
+const { id, name, lang, bg = '#1f4a68' } = Astro.props;
+const t = tr(lang);
+---
+<div class="player" style={`background:${bg}`}>
+  <button type="button" class="player-btn" data-id={id} data-title={name} aria-label={`${t.play}: ${name}`}>
+    <img src={thumb(id)} alt="" width="480" height="360" />
+    <span class="player-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#0b6b63" /></svg></span>
+    <span class="player-note">{t.playNote}</span>
+  </button>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.player-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${btn.dataset.id}?autoplay=1&rel=0`;
+      iframe.title = btn.dataset.title ?? '';
+      iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+      iframe.allowFullscreen = true;
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      btn.replaceWith(iframe);
+      iframe.focus();
+    });
+  });
+</script>
+
+<style>
+  .player { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; width: 100%; }
+  .player :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .player-btn { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; background: none; cursor: pointer; }
+  .player-btn img { width: 100%; height: 100%; object-fit: cover; }
+  .player-play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 84px; height: 84px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 12px rgba(0,0,0,0.25); }
+  .player-play svg { width: 32px; height: 32px; }
+  .player-btn:hover .player-play { background: #eaf5f3; }
+  .player-note { position: absolute; left: 0; right: 0; bottom: 0; padding: 24px 16px 12px; text-align: left; font-size: 14px; color: #fff; background: linear-gradient(transparent, rgba(0,0,0,0.65)); }
+  @media (max-width: 640px) { .player { border-radius: 0; margin: 0 -24px; width: calc(100% + 48px); } .player-play { width: 68px; height: 68px; } }
+</style>

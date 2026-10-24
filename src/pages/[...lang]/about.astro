@@ -1,0 +1,41 @@
+---
+import Base from '../../layouts/Base.astro';
+import Player from '../../components/Player.astro';
+import type { Lang } from '../../data/categories';
+import { INTRO_ID } from '../../data/videos';
+import { tr, href } from '../../i18n/ui';
+import { SITE } from '../../config';
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: 'en' } }];
+}
+const lang: Lang = Astro.params.lang === 'en' ? 'en' : 'bn';
+const t = tr(lang);
+---
+<Base lang={lang} path="about" nav="about" title={t.aboutTitle} description={t.aboutLead}>
+  <div class="wrap about">
+    <h1>{t.aboutTitle}</h1>
+    <p class="lead">{t.aboutLead}</p>
+    <div class="body">
+      {t.aboutBody.map((p) => <p>{p}</p>)}
+    </div>
+    <section aria-labelledby="intro-h" class="intro">
+      <h2 id="intro-h">{t.introVideo}</h2>
+      <Player id={INTRO_ID} name={t.introVideo} lang={lang} bg="#0b6b63" />
+    </section>
+    <div class="chips">
+      <a class="btn" href={href(lang, 'videos')}>{t.seeVideos}</a>
+      <a class="btn btn-outline" href={href(lang, 'support')}>{t.nav.support}</a>
+      <a class="btn btn-outline" href={href(lang, 'contact')}>{t.nav.contact}</a>
+      <a class="btn btn-outline" href={SITE.youtube} target="_blank" rel="noopener noreferrer">{t.youtubeChannel}</a>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .about { padding-top: 56px; padding-bottom: 32px; max-width: 820px; display: flex; flex-direction: column; gap: 24px; }
+  .lead { font-size: 21px; color: var(--ink-2); }
+  .body { display: flex; flex-direction: column; gap: 16px; max-width: 38em; }
+  .intro { display: flex; flex-direction: column; gap: 16px; padding-top: 16px; }
+  .intro h2 { font-size: 24px; }
+</style>

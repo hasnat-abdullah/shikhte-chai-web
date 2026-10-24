@@ -1,0 +1,62 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProForm from '../../components/ProForm.astro';
+import '../../styles/pros.css';
+import { PR } from '../../i18n/pros';
+import { SITE } from '../../config';
+const cfg = { errs: PR.en.errs, site: SITE.url };
+---
+<Base lang="en" path="admin" title="Admin" noindex solo>
+  <div class="wrap adm">
+    <h1 style="font-size:32px">Directory admin</h1>
+
+    <p id="adm-off" class="adm-msg bad" hidden>The directory database is not connected. Set PUBLIC_SUPABASE_URL and PUBLIC_SUPABASE_ANON_KEY (see README).</p>
+
+    <form id="adm-login" class="adm-login" hidden>
+      <p class="muted">Sign in with the admin account you created in Supabase.</p>
+      <div class="field"><label for="adm-email" style="font-weight:600">Email</label><input id="adm-email" type="email" autocomplete="username" required /></div>
+      <div class="field"><label for="adm-pass" style="font-weight:600">Password</label><input id="adm-pass" type="password" autocomplete="current-password" required /></div>
+      <p id="adm-login-err" class="adm-msg bad" role="alert" hidden></p>
+      <button class="btn" type="submit" id="adm-login-btn">Sign in</button>
+    </form>
+
+    <div id="adm-app" hidden>
+      <div class="adm-bar">
+        <div class="adm-tabs" id="adm-tabs" role="group" aria-label="Status"></div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <span class="muted" id="adm-who" style="font-size:14px"></span>
+          <button type="button" class="linkbtn" id="adm-refresh">Refresh</button>
+          <button type="button" class="linkbtn" id="adm-out">Sign out</button>
+        </div>
+      </div>
+      <div class="dir-search" style="max-width:520px">
+        <label for="adm-q">Search the list</label>
+        <input id="adm-q" type="search" placeholder="Name, email, phone, district, qualification" />
+      </div>
+      <p id="adm-note" class="adm-msg ok" role="status" hidden></p>
+      <div id="adm-list" class="adm-list"></div>
+    </div>
+  </div>
+
+  <dialog class="adm-dialog" id="adm-dialog" aria-labelledby="adm-dtitle">
+    <form id="adm-form" novalidate>
+      <div class="adm-dhead"><h2 id="adm-dtitle">Edit listing</h2><button type="button" class="linkbtn" id="adm-close" style="text-decoration:none">Close ✕</button></div>
+      <div class="adm-dbody">
+        <p class="adm-private" id="adm-meta"></p>
+        <p id="adm-ferr" class="adm-msg bad" role="alert" hidden style="margin:12px 0"></p>
+        <div style="margin-top:20px"><ProForm lang="en" admin /></div>
+      </div>
+      <div class="adm-dfoot">
+        <div class="left"><button type="button" class="danger" id="adm-delete">Delete</button><a class="btn" id="adm-mail" href="#" style="color:var(--ink);background:#fff;border:1.5px solid #cfcac0;font-weight:600">Email submitter</a></div>
+        <div class="right">
+          <button type="button" id="adm-reject">Reject</button>
+          <button type="button" id="adm-save">Save changes</button>
+          <button type="button" class="primary" id="adm-approve">Approve &amp; publish</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="application/json" id="adm-cfg" set:html={JSON.stringify(cfg)} />
+  <script src="../../scripts/admin.ts"></script>
+</Base>

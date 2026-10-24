@@ -1,0 +1,612 @@
+{
+ "channelId": "UCIN5XbaMKBaOEyuFmYSgLLA",
+ "introId": "dy7WStybjZc",
+ "videos": [
+  {
+   "id": "t6REp4-_89U",
+   "cat": "self",
+   "bn": "মহামারীর কঠিন সময়েও কীভাবে সঠিক সিদ্ধান্ত নেবেন",
+   "en": "Making the right decisions, even in a pandemic"
+  },
+  {
+   "id": "snVP2RapR3M",
+   "cat": "mood",
+   "bn": "কোভিড-১৯ সংকটে মানসিক স্বাস্থ্য যেভাবে ভালো রাখবেন",
+   "en": "Protecting your mental health during COVID-19"
+  },
+  {
+   "id": "_op_smhrzs8",
+   "cat": "anxiety",
+   "bn": "হেলথ অ্যাংজাইটি",
+   "en": "Health Anxiety"
+  },
+  {
+   "id": "012B3fg4toQ",
+   "cat": "relationships",
+   "bn": "আন্তঃপারস্পরিক দ্বন্দ্ব",
+   "en": "Interpersonal Conflict"
+  },
+  {
+   "id": "nY3wXff5oKo",
+   "cat": "self",
+   "bn": "মানব মনের অন্তর্দ্বন্দ্ব",
+   "en": "Intrapersonal Conflict"
+  },
+  {
+   "id": "Ra6pZ1q9KRQ",
+   "cat": "relationships",
+   "bn": "পরিবারের জীবনচক্র",
+   "en": "Family Life Cycle"
+  },
+  {
+   "id": "xW8WlE6VOSs",
+   "cat": "relationships",
+   "bn": "পরিবার এবং তার মানসিক স্বাস্থ্য",
+   "en": "Family and its Mental Health"
+  },
+  {
+   "id": "LDKg0UWRzzA",
+   "cat": "mood",
+   "bn": "বিষণ্ণতা থেকে মুক্তির উপায়",
+   "en": "How to get relief from depression"
+  },
+  {
+   "id": "LK-Vbj8QjKg",
+   "cat": "anxiety",
+   "bn": "সামাজিক ভীতি থেকে মুক্তির বাস্তবসম্মত উপায়",
+   "en": "A practical approach to social phobia"
+  },
+  {
+   "id": "m-IpkHHgCgo",
+   "cat": "relationships",
+   "bn": "ভালোবাসার সম্পর্কে বিচ্ছিন্নতা",
+   "en": "Getting back to normal life after a breakup"
+  },
+  {
+   "id": "Hhna97umras",
+   "cat": "relationships",
+   "bn": "মানব সম্পর্ক",
+   "en": "Human Relationships"
+  },
+  {
+   "id": "Qv5Nv6WmWRw",
+   "cat": "parenting",
+   "bn": "জীবনের ভিত্তি স্থাপন",
+   "en": "Early Years Foundation"
+  },
+  {
+   "id": "OkW6p_EaI5w",
+   "cat": "self",
+   "bn": "কীভাবে ‘না’ বলবেন?",
+   "en": "How to say NO"
+  },
+  {
+   "id": "4mfZA0sy-w4",
+   "cat": "addiction",
+   "bn": "নেশার টান কীভাবে নিয়ন্ত্রণ করা যায়?",
+   "en": "Craving Management"
+  },
+  {
+   "id": "0bq3r3xBY1E",
+   "cat": "self",
+   "bn": "আশেপাশের মানুষের কটু কথার মোকাবেলা করবেন কীভাবে?",
+   "en": "Enhancing Self Worth"
+  },
+  {
+   "id": "gQrVOKuFi90",
+   "cat": "help",
+   "bn": "মানসিক স্বাস্থ্য সেবার জন্য কখন, কার কাছে যাবেন?",
+   "en": "Finding a qualified professional"
+  },
+  {
+   "id": "LeOcJdgoPXs",
+   "cat": "self",
+   "bn": "কীভাবে রাগ নিয়ন্ত্রণ করবেন?",
+   "en": "Anger Management"
+  },
+  {
+   "id": "oRya-GgT2vU",
+   "cat": "calm",
+   "bn": "মাংসপেশির শিথিলায়ন (PMR)",
+   "en": "Progressive Muscle Relaxation Technique"
+  },
+  {
+   "id": "BlMbvmnn22I",
+   "cat": "help",
+   "bn": "মানসিক স্বাস্থ্য পেশাজীবী কারা?",
+   "en": "Who are mental health professionals?"
+  },
+  {
+   "id": "NPZVVAled5s",
+   "cat": "parenting",
+   "bn": "অটিস্টিক শিশুর পরিচর্যা",
+   "en": "Caring for an autistic child"
+  },
+  {
+   "id": "le8qF9LmYq8",
+   "cat": "health",
+   "bn": "ডার্ক সার্কেল কেন হয়? প্রতিকার কী?",
+   "en": "Dark circles"
+  },
+  {
+   "id": "JMfGKiNj8tc",
+   "cat": "mood",
+   "bn": "আত্মহত্যা সম্পর্কে ভুল ধারণা",
+   "en": "Myths about suicide"
+  },
+  {
+   "id": "enADOxEy3wQ",
+   "cat": "addiction",
+   "bn": "নারী মাদকাসক্তির ভয়াবহতা",
+   "en": "Drug addiction among women"
+  },
+  {
+   "id": "Er8mfmsDVts",
+   "cat": "anxiety",
+   "bn": "প্যানিক অ্যাটাক কী, কেন হয়? মুক্তির উপায়",
+   "en": "Panic Attack"
+  },
+  {
+   "id": "aBuQdpZqgSA",
+   "cat": "addiction",
+   "bn": "আসক্তির বিজ্ঞান: মানুষ কেন আসক্ত হয়?",
+   "en": "The Science of Addiction"
+  },
+  {
+   "id": "fHMS7f6gxlM",
+   "cat": "mood",
+   "bn": "আত্মহত্যা নয়, জীবনকে উপভোগ করুন",
+   "en": "Choose life"
+  },
+  {
+   "id": "ehZl36Vr9rw",
+   "cat": "tech",
+   "bn": "বিশ্বকাপ ফুটবল ২০১৮-এর অবিশ্বাস্য সব প্রযুক্তি",
+   "en": "World Cup 2018 technology"
+  },
+  {
+   "id": "_FzxZDOOADk",
+   "cat": "addiction",
+   "bn": "মোবাইল আসক্তি থেকে মুক্তির উপায়",
+   "en": "Overcoming phone addiction"
+  },
+  {
+   "id": "XACukezLUP0",
+   "cat": "health",
+   "bn": "অ্যান্টিবায়োটিক রেজিস্ট্যান্স কী? কীভাবে প্রতিরোধ করা যায়?",
+   "en": "Antibiotic Resistance"
+  },
+  {
+   "id": "-XiomcAw6pQ",
+   "cat": "anxiety",
+   "bn": "সামাজিক ভীতি থেকে মুক্তির উপায়",
+   "en": "Social Phobia"
+  },
+  {
+   "id": "0wuTnU8rvsw",
+   "cat": "tech",
+   "bn": "বঙ্গবন্ধু-১ স্যাটেলাইটে বাংলাদেশ যে সুবিধা পাবে",
+   "en": "Bangabandhu-1 Satellite"
+  },
+  {
+   "id": "fqlcR9cqhHQ",
+   "cat": "health",
+   "bn": "ফরমালিন কেন ক্ষতিকর?",
+   "en": "Why formalin is harmful"
+  },
+  {
+   "id": "n0ylBFc3tMc",
+   "cat": "calm",
+   "bn": "মাইন্ডফুলনেস কী? কীভাবে চর্চা করবেন?",
+   "en": "What is Mindfulness?"
+  },
+  {
+   "id": "8f3b9KYFDKY",
+   "cat": "help",
+   "bn": "কাউন্সেলিং এবং সাইকোথেরাপি বলতে কী বুঝি?",
+   "en": "Counseling and Psychotherapy"
+  },
+  {
+   "id": "EUpKcJcCic0",
+   "cat": "help",
+   "bn": "বাংলাদেশ সাইকোলজিক্যাল অ্যাসোসিয়েশন",
+   "en": "Bangladesh Psychological Association (BPA)"
+  },
+  {
+   "id": "7fCpmfVR3Hc",
+   "cat": "study",
+   "bn": "গণতন্ত্র কী? গণতন্ত্রের মূল স্তম্ভ",
+   "en": "What is Democracy?"
+  },
+  {
+   "id": "WzkFqUbpen0",
+   "cat": "calm",
+   "bn": "কীভাবে রিলাক্সেশন চর্চা করবেন? বৈজ্ঞানিক ব্যাখ্যা",
+   "en": "How to practice relaxation"
+  },
+  {
+   "id": "6O_HrCU-qNc",
+   "cat": "health",
+   "bn": "মানুষ কেন কাঁদে? চোখের জল কী?",
+   "en": "Why do people cry?"
+  },
+  {
+   "id": "CdaL4twUdkE",
+   "cat": "parenting",
+   "bn": "অটিজম কী? কীভাবে বুঝবেন?",
+   "en": "What is Autism?"
+  },
+  {
+   "id": "LO0W9_ewsPs",
+   "cat": "anxiety",
+   "bn": "জেনারেলাইজড অ্যাংজাইটি থেকে মুক্তির উপায়",
+   "en": "Generalized Anxiety Disorder"
+  },
+  {
+   "id": "SC4p4hmDm7g",
+   "cat": "study",
+   "bn": "পলাশীর যুদ্ধের মূল গোপন কারণ",
+   "en": "Battle of Plassey"
+  },
+  {
+   "id": "Hxer4fvcUSA",
+   "cat": "help",
+   "bn": "কখন মানসিক স্বাস্থ্য সেবা নেবেন?",
+   "en": "When should we seek psychological help?"
+  },
+  {
+   "id": "wR_pEon4btk",
+   "cat": "anxiety",
+   "bn": "OCD কী? মুক্তির উপায়",
+   "en": "What is OCD?"
+  },
+  {
+   "id": "SlB3aBprSgk",
+   "cat": "tech",
+   "bn": "SSD বনাম HDD: কোনটি ভালো?",
+   "en": "SSD vs HDD"
+  },
+  {
+   "id": "0186E-_s-so",
+   "cat": "parenting",
+   "bn": "সন্তানের সুশিক্ষায় বাবা-মা ও শিক্ষকদের করণীয়",
+   "en": "Supporting a child’s learning"
+  },
+  {
+   "id": "u_WWaMx1GCg",
+   "cat": "self",
+   "bn": "কীভাবে সহজে সমস্যার সমাধান করবেন?",
+   "en": "Problem Solving Strategy"
+  },
+  {
+   "id": "iyTaehDdkrI",
+   "cat": "parenting",
+   "bn": "আদর্শ বাবা-মা হওয়ার পূর্বশর্ত",
+   "en": "Becoming a good parent"
+  },
+  {
+   "id": "6nuwIhMNj80",
+   "cat": "parenting",
+   "bn": "বুদ্ধিপ্রতিবন্ধিতা",
+   "en": "Intellectual Disability"
+  },
+  {
+   "id": "IXlQO6NEb3M",
+   "cat": "parenting",
+   "bn": "সঠিকভাবে সন্তান লালনপালনে করণীয় ২",
+   "en": "Bringing up a child, part 2"
+  },
+  {
+   "id": "oLm6n8KnLws",
+   "cat": "study",
+   "bn": "ভালো ফলাফল ও মনে রাখার জাদু",
+   "en": "The magic of good grades"
+  },
+  {
+   "id": "1sD8_SocXMI",
+   "cat": "tech",
+   "bn": "মাত্র ৫ মিনিটে ঢাকা থেকে চট্টগ্রাম",
+   "en": "Hyperloop Technology"
+  },
+  {
+   "id": "mDyeNumC_Fk",
+   "cat": "addiction",
+   "bn": "চিকিৎসা ছাড়া কি মাদক ছাড়া যায়?",
+   "en": "Quitting drugs without treatment"
+  },
+  {
+   "id": "6dEHIo43z3w",
+   "cat": "parenting",
+   "bn": "সঠিকভাবে সন্তান লালনপালনে করণীয়",
+   "en": "Bringing up a child"
+  },
+  {
+   "id": "8XvdZY633hI",
+   "cat": "health",
+   "bn": "দাঁত তুললে কি চোখের ক্ষতি হয়?",
+   "en": "Does pulling teeth harm the eyes?"
+  },
+  {
+   "id": "XlcIe0INkys",
+   "cat": "parenting",
+   "bn": "শিশুর সমস্যামূলক আচরণ",
+   "en": "Conduct Disorder"
+  },
+  {
+   "id": "YkF3fuH6R_Q",
+   "cat": "relationships",
+   "bn": "দাম্পত্য কলহ থেকে মুক্তির উপায়",
+   "en": "How to Solve Marital Conflict"
+  },
+  {
+   "id": "eTy3pQrD4-s",
+   "cat": "help",
+   "bn": "স্কিজোফ্রেনিয়া কী? লক্ষণ ও ব্যবস্থাপনা",
+   "en": "What is Schizophrenia?"
+  },
+  {
+   "id": "wX3SBQLyySk",
+   "cat": "self",
+   "bn": "আত্মশক্তি বৃদ্ধির উপায় ২",
+   "en": "Enhancing Self Worth, part 2"
+  },
+  {
+   "id": "bH_Wyrua8Gw",
+   "cat": "health",
+   "bn": "উচ্চ রক্তচাপ কী?",
+   "en": "What is Hypertension?"
+  },
+  {
+   "id": "89Tbb7FMc9k",
+   "cat": "self",
+   "bn": "আত্মশক্তি বৃদ্ধির উপায় ১",
+   "en": "Enhancing Self Worth, part 1"
+  },
+  {
+   "id": "8xg5MMFoS30",
+   "cat": "parenting",
+   "bn": "শিশুর যৌন নির্যাতন ২: কীভাবে শিশুকে নিরাপদ রাখবেন",
+   "en": "Keeping children safe"
+  },
+  {
+   "id": "PiZ8NCI7w-I",
+   "cat": "tech",
+   "bn": "অদৃশ্য হওয়ার রহস্য",
+   "en": "The Secret of Invisibility"
+  },
+  {
+   "id": "nFXTB5apGDY",
+   "cat": "parenting",
+   "bn": "শিশুর যৌন নির্যাতন",
+   "en": "Child Sexual Abuse"
+  },
+  {
+   "id": "MICCpIAmIRE",
+   "cat": "tech",
+   "bn": "রংধনুর সাতকাহন",
+   "en": "All about Rainbow"
+  },
+  {
+   "id": "1nfnZFIG2_o",
+   "cat": "mood",
+   "bn": "ব্লু হোয়েল গেম: অভিভাবকদের করণীয়",
+   "en": "Blue Whale game: for parents"
+  },
+  {
+   "id": "o53X9W6TcG8",
+   "cat": "mood",
+   "bn": "ব্লু হোয়েল গেমের মনোবৈজ্ঞানিক ব্যাখ্যা",
+   "en": "Psychology of the Blue Whale game"
+  },
+  {
+   "id": "0gmz6RoDKag",
+   "cat": "mood",
+   "bn": "ব্লু হোয়েল গেমের ভয়াবহতা",
+   "en": "Dangers of the Blue Whale game"
+  },
+  {
+   "id": "0JiV7arDdrI",
+   "cat": "tech",
+   "bn": "ডিম আগে নাকি মুরগি আগে?",
+   "en": "Egg or chicken first?"
+  },
+  {
+   "id": "-494AJGED64",
+   "cat": "tech",
+   "bn": "গরিলা গ্লাস কী?",
+   "en": "What is Gorilla Glass?"
+  },
+  {
+   "id": "bmxsWp14TvQ",
+   "cat": "help",
+   "bn": "মানসিক রোগ নিয়ে নানা কুসংস্কার",
+   "en": "Myths about Mental Health"
+  },
+  {
+   "id": "xDgxwzUYDow",
+   "cat": "health",
+   "bn": "দুধ দাঁত কী? কেন পড়ে যায়?",
+   "en": "Milk teeth"
+  },
+  {
+   "id": "4HUF6IuPrQM",
+   "cat": "tech",
+   "bn": "রসায়ন নিয়ে কিছু প্রয়োজনীয় প্রশ্নের উত্তর",
+   "en": "Chemistry questions answered"
+  },
+  {
+   "id": "eNsSZtgRPIo",
+   "cat": "health",
+   "bn": "মানুষ কেন স্বপ্ন দেখে?",
+   "en": "Why do people dream?"
+  },
+  {
+   "id": "kpSrwgLQ2UI",
+   "cat": "tech",
+   "bn": "অষ্টধাতুর আংটি কি ভাগ্য বদলাতে পারে?",
+   "en": "Can a ring change your luck?"
+  },
+  {
+   "id": "kEYsirhjEUM",
+   "cat": "tech",
+   "bn": "স্ক্যানার কীভাবে বারকোড পড়ে?",
+   "en": "How scanners read barcodes"
+  },
+  {
+   "id": "q8X_mt7kHl0",
+   "cat": "study",
+   "bn": "ত্রিকোণমিতিক অনুপাত মনে রাখার উপায়",
+   "en": "Remembering trigonometric ratios"
+  },
+  {
+   "id": "uWqVFExixb8",
+   "cat": "health",
+   "bn": "দাঁতের সঠিক যত্ন নিচ্ছেন তো?",
+   "en": "Dental care"
+  },
+  {
+   "id": "Y6_u1iCu-_Y",
+   "cat": "relationships",
+   "bn": "প্রেম-ভালোবাসার বৈজ্ঞানিক ব্যাখ্যা",
+   "en": "Science of Love"
+  },
+  {
+   "id": "1UfLKM-lpTo",
+   "cat": "tech",
+   "bn": "Li-Fi কী?",
+   "en": "What is LiFi?"
+  },
+  {
+   "id": "4cki0ZUx2UQ",
+   "cat": "health",
+   "bn": "ভ্যাকসিন কীভাবে কাজ করে?",
+   "en": "How vaccines work"
+  },
+  {
+   "id": "SZ2I1Waq74Q",
+   "cat": "study",
+   "bn": "১ কেন মৌলিক সংখ্যা নয়?",
+   "en": "Why 1 is not a prime number"
+  },
+  {
+   "id": "cuzCQhKG4jI",
+   "cat": "health",
+   "bn": "রক্তের গ্রুপ আলাদা হয় কেন?",
+   "en": "Blood groups"
+  },
+  {
+   "id": "SF5azu-HRrs",
+   "cat": "self",
+   "bn": "সাফল্যের জাদুকাঠি",
+   "en": "The magic of success"
+  },
+  {
+   "id": "nHHcXxu4Byo",
+   "cat": "tech",
+   "bn": "গাছ লাগাই, গাছ বাঁচাই",
+   "en": "Plant trees, save trees"
+  },
+  {
+   "id": "UcpFBFOtSuw",
+   "cat": "health",
+   "bn": "রেড মিট খাওয়া কি স্বাস্থ্যসম্মত?",
+   "en": "Is red meat healthy?"
+  },
+  {
+   "id": "hmIfwdInf-A",
+   "cat": "study",
+   "bn": "Infinity কত প্রকার?",
+   "en": "Types of Infinity"
+  },
+  {
+   "id": "f-ZLP5g2pJI",
+   "cat": "help",
+   "bn": "মানসিক স্বাস্থ্য নিয়ে ভেবেছেন কখনো?",
+   "en": "What is Mental Health?"
+  },
+  {
+   "id": "IZGn6Qzg8bA",
+   "cat": "health",
+   "bn": "ক্লোনিং করে কি আপনাকে তৈরি করা সম্ভব?",
+   "en": "Cloning"
+  },
+  {
+   "id": "QSo8wWsOPhg",
+   "cat": "tech",
+   "bn": "জোনাকি পোকার আলোর রহস্য",
+   "en": "Secret of fireflies’ light"
+  },
+  {
+   "id": "egfn5rpB3FA",
+   "cat": "tech",
+   "bn": "বারকোড কী?",
+   "en": "What is a Barcode?"
+  },
+  {
+   "id": "4TH0C0sJ1U0",
+   "cat": "tech",
+   "bn": "অজানা প্রশ্নের উত্তর দেবে কাইরাল অণু",
+   "en": "The first chiral molecule in space"
+  },
+  {
+   "id": "DC2ViMHZyC4",
+   "cat": "tech",
+   "bn": "আকাশের রং নীল কেন?",
+   "en": "Why is the sky blue?"
+  },
+  {
+   "id": "dfRz8i9UQms",
+   "cat": "health",
+   "bn": "ওষুধ শরীরে কীভাবে কাজ করে?",
+   "en": "How medicine works"
+  },
+  {
+   "id": "nvrC-5CvzpE",
+   "cat": "tech",
+   "bn": "কম্পিউটারে ড্রাইভ C থেকে শুরু হয় কেন?",
+   "en": "Why there is no A or B drive"
+  },
+  {
+   "id": "qcBOG3vgCJg",
+   "cat": "health",
+   "bn": "ক্রায়োসার্জারি কী?",
+   "en": "What is Cryosurgery?"
+  },
+  {
+   "id": "J2Tqdot9pTQ",
+   "cat": "health",
+   "bn": "নিউরন কেন বিভাজিত হয় না?",
+   "en": "Why don’t neurons divide?"
+  },
+  {
+   "id": "sgr5K8qyenA",
+   "cat": "tech",
+   "bn": "ফুটবলের বেঁকে যাওয়ার বিজ্ঞান",
+   "en": "Physics behind soccer"
+  },
+  {
+   "id": "3Q55iPyZKwY",
+   "cat": "study",
+   "bn": "শূন্য নিয়ে যত সমস্যা",
+   "en": "Problems with Zero"
+  },
+  {
+   "id": "XMJVGJz8VOY",
+   "cat": "tech",
+   "bn": "গ্রিগনার্ড বিকারক",
+   "en": "Grignard Reagent"
+  },
+  {
+   "id": "NirCPoMI3VM",
+   "cat": "health",
+   "bn": "পেঁয়াজ কাটলে চোখে জল আসে কেন?",
+   "en": "Why onions make us cry"
+  },
+  {
+   "id": "lD63r957plU",
+   "cat": "tech",
+   "bn": "ফেসবুক টিপস",
+   "en": "Facebook Tricks"
+  }
+ ]
+}

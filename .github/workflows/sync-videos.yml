@@ -1,0 +1,32 @@
+name: Sync videos from YouTube
+
+on:
+  schedule:
+    - cron: '0 3 * * 1' # every Monday, 03:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/sync-videos.mjs
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/sync-videos
+          commit-message: 'chore: sync videos from YouTube'
+          title: 'Sync videos from YouTube'
+          body: |
+            Automatic update of video stats (views, dates, durations) and any new uploads.
+
+            **New uploads** are added with a guessed topic and `"review": true` in `src/data/videos.json`.
+            Please check the topic and the English title before merging, then remove the `review` flag.
+            Merging this pull request publishes the changes.
+          delete-branch: true

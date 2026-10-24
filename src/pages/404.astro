@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro';
+import { tr, href } from '../i18n/ui';
+const t = tr('bn');
+const e = tr('en');
+---
+<Base lang="bn" title={t.notFoundTitle} noindex>
+  <div class="wrap nf">
+    <h1>{t.notFoundTitle}</h1>
+    <p>{t.notFoundBody}</p>
+    <p class="muted">{e.notFoundTitle}. {e.notFoundBody}</p>
+    <div class="chips">
+      <a class="btn" href={href('bn')}>{t.backHome}</a>
+      <a class="btn btn-outline" href={href('en')}>{e.backHome} (English)</a>
+    </div>
+  </div>
+</Base>
+<style>
+  .nf { padding-top: 80px; padding-bottom: 48px; display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+</style>

@@ -1,0 +1,154 @@
+---
+import Base from '../../layouts/Base.astro';
+import VideoCard from '../../components/VideoCard.astro';
+import type { Lang } from '../../data/categories';
+import { CATEGORIES, CAT } from '../../data/categories';
+import { VIDEOS, shelfOf, countFor, catCount, meta, cleanDesc } from '../../data/videos';
+import { tr, num, href } from '../../i18n/ui';
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: 'en' } }];
+}
+const lang: Lang = Astro.params.lang === 'en' ? 'en' : 'bn';
+const t = tr(lang);
+const total = VIDEOS.length;
+// Text the search looks through: titles in both languages, topic names in both languages, and the channel description.
+const searchDocs = VIDEOS.map((v) => ({ t: `${v.bn} ${v.en}`, c: `${CAT[v.cat].bn} ${CAT[v.cat].en}`, d: cleanDesc(meta(v.id)?.desc ?? '').slice(0, 300) }));
+const cfg = {
+  lang,
+  step: 12,
+  resultsTpl: t.resultsOf('{n}'),
+  shownTpl: t.shownOf('{a}', '{b}'),
+};
+---
+<Base lang={lang} path="videos" nav="videos" title={t.libTitle} description={t.libLead(num(total, lang))}>
+  <div class="wrap lib">
+    <nav class="crumbs" aria-label={t.breadcrumb}><a href={href(lang)}>{t.nav.home}</a> <span aria-hidden="true">/</span> {t.libTitle}</nav>
+    <div class="lib-head">
+      <h1>{t.libTitle}</h1>
+      <p class="muted">{t.libLead(num(total, lang))}</p>
+    </div>
+
+    <div class="controls">
+      <div class="search-box">
+        <label for="lib-q">{t.libSearchLabel}</label>
+        <div class="search-field">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#555c62" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
+          <input id="lib-q" type="search" placeholder={t.libSearchPlaceholder} autocomplete="off" />
+        </div>
+      </div>
+      <div class="shelves" role="group" aria-label={t.shelf}>
+        <button type="button" data-shelf="mental" aria-pressed="true">{t.nav.mental} <span>{num(countFor('mental'), lang)}</span></button>
+        <button type="button" data-shelf="science" aria-pressed="false">{t.nav.science} <span>{num(countFor('science'), lang)}</span></button>
+        <button type="button" data-shelf="all" aria-pressed="false">{t.shelfAll} <span>{num(total, lang)}</span></button>
+      </div>
+    </div>
+
+    <div class="lib-body">
+      <aside class="filters" aria-label={t.filterLabel}>
+        <h2>{t.topicHeading}</h2>
+        <div class="cat-list">
+          <button type="button" class="cat" data-cat="all" aria-pressed="true"><span class="dot" style="background:#9aa0a5"></span><span class="cat-name">{t.allTopics}</span><span class="cat-n" id="all-n">{num(total, lang)}</span></button>
+          {CATEGORIES.map((c) => (
+            <button type="button" class="cat" data-cat={c.id} data-shelf={c.shelf} aria-pressed="false">
+              <span class="dot" style={`background:${c.ink}`}></span><span class="cat-name">{c[lang]}</span><span class="cat-n">{num(catCount(c.id), lang)}</span>
+            </button>
+          ))}
+        </div>
+      </aside>
+
+      <section class="results" aria-live="polite">
+        <div class="results-bar">
+          <p><strong id="rc">{num(total, lang)}</strong> <span id="rl" class="muted"></span></p>
+          <div class="bar-right">
+            <button type="button" class="clear" id="clear" hidden>{t.clearFilters}</button>
+            <label class="sort">{t.sortLabel}
+              <select id="sort">
+                <option value="rel" hidden disabled>{t.sortRel}</option>
+                <option value="new">{t.sortNew}</option>
+                <option value="views">{t.sortViews}</option>
+                <option value="old">{t.sortOld}</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div id="empty" class="empty" hidden>
+          <p class="empty-title">{t.emptyTitle}</p>
+          <p class="muted">{t.emptyBody}</p>
+          <p class="try">{t.trySearch}</p>
+          <div class="chips try-chips">
+            {t.searchSuggestions.map((q) => <button type="button" class="chip" data-suggest={q}>{q}</button>)}
+          </div>
+          <a class="btn" href={href(lang, 'contact')}>{t.suggestTopic}</a>
+        </div>
+
+        <div class="vgrid" id="grid">
+          {VIDEOS.map((v, i) => (
+            <div class="item" data-cat={v.cat} data-shelf={shelfOf(v)} data-q={`${v.bn} ${v.en}`.toLowerCase()} data-i={i} data-views={meta(v.id)?.views ?? 0} data-date={meta(v.id)?.date ?? ''}>
+              <VideoCard v={v} lang={lang} eager={i < 6} showViews />
+            </div>
+          ))}
+        </div>
+
+        <div class="more-wrap" id="more-wrap" hidden>
+          <button type="button" class="btn btn-outline" id="more">{t.loadMore}</button>
+          <span class="muted small" id="progress"></span>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script type="application/json" id="lib-cfg" set:html={JSON.stringify(cfg)} />
+  <script type="application/json" id="search-docs" set:html={JSON.stringify(searchDocs)} />
+  <script src="../../scripts/library.ts"></script>
+</Base>
+
+<style>
+  .lib { padding-top: 36px; padding-bottom: 56px; display: flex; flex-direction: column; gap: 24px; }
+  .crumbs { font-size: 15px; color: var(--ink-3); }
+  .lib-head { display: flex; flex-direction: column; gap: 6px; }
+  .lib-head h1 { font-size: clamp(30px, 4vw, 44px); }
+  .controls { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; }
+  .search-box { flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .search-box label { font-size: 15px; font-weight: 600; }
+  .search-field { position: relative; }
+  .search-field svg { position: absolute; left: 16px; top: 16px; }
+  .search-field input { padding-left: 46px; }
+  .shelves { display: flex; padding: 4px; gap: 4px; background: #efece6; border-radius: 12px; max-width: 100%; overflow-x: auto; }
+  .shelves button { flex: 0 0 auto; min-height: 44px; padding: 8px 16px; border: 0; border-radius: 9px; background: transparent; color: var(--ink-2); font-size: 16px; font-weight: 500; cursor: pointer; }
+  .shelves button span { opacity: 0.8; font-weight: 500; }
+  .shelves button[aria-pressed='true'] { background: #fff; color: #0b5a53; font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,0.12); }
+
+  .lib-body { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }
+  .filters { flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+  .filters h2 { font-size: 15px; color: var(--ink-3); letter-spacing: 0.02em; }
+  .cat-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cat { flex: 1 1 100%; display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid transparent; background: transparent; font-size: 16px; line-height: 1.4; text-align: left; cursor: pointer; }
+  .cat:hover { background: var(--sand); }
+  .cat[aria-pressed='true'] { background: var(--teal-tint); border-color: var(--teal); color: #0b5a53; font-weight: 700; }
+  .cat .dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; }
+  .cat-name { flex: 1; }
+  .cat-n { font-size: 14px; color: var(--ink-3); }
+  .results { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+  .results-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+  .bar-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+  .sort { display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--ink-3); }
+  .sort select { min-height: 44px; padding: 0 12px; border: 1px solid #cfcac0; border-radius: 8px; background: #fff; color: var(--ink); font-size: 15px; }
+  .clear { min-height: 44px; padding: 0 14px; border: 0; background: none; color: var(--teal); font-size: 15px; font-weight: 600; text-decoration: underline; cursor: pointer; }
+  .empty { padding: 48px 24px; text-align: center; border: 1px dashed #cfcac0; border-radius: 14px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .empty-title { font-size: 20px; font-weight: 700; }
+  .try { font-size: 15px; color: var(--ink-3); margin-top: 8px; }
+  .try-chips { justify-content: center; }
+  .try-chips .chip { min-height: 44px; font-size: 16px; }
+  .more-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; padding-top: 16px; }
+  .small { font-size: 14px; }
+
+  @media (max-width: 900px) {
+    .filters { flex: 1 1 100%; }
+    .cat-list { flex-wrap: nowrap; overflow-x: auto; margin: 0 -24px; padding: 0 24px 6px; }
+    .cat { flex: 0 0 auto; border-color: #cfcac0; border-radius: 999px; padding: 6px 16px; }
+    .cat .cat-n { display: none; }
+    .cat .dot { display: none; }
+  }
+</style>

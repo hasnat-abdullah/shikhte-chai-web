@@ -1,0 +1,109 @@
+---
+import Base from '../../../layouts/Base.astro';
+import '../../../styles/pros.css';
+import type { Lang } from '../../../data/categories';
+import { TYPES, MODES, LANGUAGES, AGES, SPECIALIZATIONS } from '../../../data/professionals';
+import { PR } from '../../../i18n/pros';
+import { href, num } from '../../../i18n/ui';
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: 'en' } }];
+}
+const lang: Lang = Astro.params.lang === 'en' ? 'en' : 'bn';
+const p = PR[lang];
+const cfg = {
+  lang,
+  step: 10,
+  t: {
+    results: p.results('{n}'), shown: p.shown('{a}', '{b}'), call: p.call, details: p.details, hide: p.hide, qualifications: p.qualifications, languages: p.languages,
+    ages: p.ages, fee: p.fee, availability: p.availability, address: p.address, website: p.website, email: p.email, report: p.report, onlineAnywhere: p.onlineAnywhere,
+    error: p.error, empty: p.empty, emptyHint: p.emptyHint, emptyAll: p.emptyAll, notConnected: p.notConnected, clear: p.clear, anywhere: lang === 'bn' ? 'অনলাইন সেবা দেন এমন সবাইকেও দেখান' : 'Also show professionals who work online from anywhere',
+    verifiedLabels: p.verified, verifiedHints: p.verifiedHint, fVerifiedOnly: p.fVerifiedOnly,
+    allDistricts: p.fAnyLocation, showFilters: p.showFilters, hideFilters: p.hideFilters, filters: p.filters, moreSpecs: lang === 'bn' ? 'আরও দক্ষতা দেখুন' : 'Show more specializations', lessSpecs: lang === 'bn' ? 'কম দেখুন' : 'Show fewer',
+  },
+  contact: href(lang, 'contact'),
+};
+const opts = (list: { value: string; bn: string; en: string }[]) => list.map((o) => ({ value: o.value, label: o[lang] }));
+---
+<Base lang={lang} path="professionals" nav="pros" title={p.title} description={p.lead}>
+  <div class="wrap dir">
+    <header class="head">
+      <h1 style="font-size: clamp(30px, 4vw, 44px)">{p.title}</h1>
+      <p class="lead">{p.lead}</p>
+      <p class="notice" role="note">{p.notice}</p>
+      <details class="safe">
+        <summary>{p.safeTitle}</summary>
+        <dl>
+          {p.safeItems.map(([h, b]) => (<><dt>{h}</dt><dd>{b}</dd></>))}
+        </dl>
+        <p class="muted" style="font-size:14px">{p.safeNote}</p>
+      </details>
+    </header>
+
+    <div class="dir-top">
+      <div class="dir-search">
+        <label for="d-q">{p.searchLabel}</label>
+        <div class="field">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#555c62" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
+          <input id="d-q" type="search" placeholder={p.searchPlaceholder} autocomplete="off" />
+        </div>
+      </div>
+      <button type="button" class="filters-btn" id="filters-btn" aria-expanded="false" aria-controls="d-filters">{p.showFilters}</button>
+    </div>
+
+    <div class="dir-body" id="dir-body">
+      <aside class="dir-filters" id="d-filters" aria-label={p.filters}>
+        <fieldset class="fgroup"><legend>{p.fVerified}</legend>
+          <label class="fopt"><input type="checkbox" id="d-verified" /><span>{p.fVerifiedOnly}</span><span class="n" id="d-verified-n"></span></label>
+        </fieldset>
+        <fieldset class="fgroup" data-facet="type"><legend>{p.fType}</legend>
+          {opts(TYPES).map((o) => (<label class="fopt"><input type="checkbox" data-facet="type" value={o.value} /><span>{o.label}</span><span class="n"></span></label>))}
+        </fieldset>
+        <fieldset class="fgroup" data-facet="mode"><legend>{p.fMode}</legend>
+          {opts(MODES).map((o) => (<label class="fopt"><input type="checkbox" data-facet="mode" value={o.value} /><span>{o.label}</span><span class="n"></span></label>))}
+        </fieldset>
+        <div class="fgroup">
+          <label for="d-district" style="font-size:14px;font-weight:700;color:var(--ink-3)">{p.fLocation}</label>
+          <select id="d-district"><option value="">{p.fAnyLocation}</option></select>
+          <label class="fopt" id="anywhere-wrap" hidden><input type="checkbox" id="d-anywhere" /><span>{cfg.t.anywhere}</span></label>
+        </div>
+        <fieldset class="fgroup" data-facet="spec"><legend>{p.fSpec}</legend>
+          {opts(SPECIALIZATIONS).map((o, i) => (<label class="fopt" data-extra={i >= 9 ? '1' : undefined}><input type="checkbox" data-facet="spec" value={o.value} /><span>{o.label}</span><span class="n"></span></label>))}
+          <button type="button" class="toggle-more" id="spec-more" aria-expanded="false">{cfg.t.moreSpecs}</button>
+        </fieldset>
+        <fieldset class="fgroup" data-facet="speak"><legend>{p.fLang}</legend>
+          {opts(LANGUAGES).map((o) => (<label class="fopt"><input type="checkbox" data-facet="speak" value={o.value} /><span>{o.label}</span><span class="n"></span></label>))}
+        </fieldset>
+        <fieldset class="fgroup" data-facet="age"><legend>{p.fAge}</legend>
+          {opts(AGES).map((o) => (<label class="fopt"><input type="checkbox" data-facet="age" value={o.value} /><span>{o.label}</span><span class="n"></span></label>))}
+        </fieldset>
+      </aside>
+
+      <section class="dir-main" aria-live="polite">
+        <div class="dir-bar">
+          <p><strong id="d-count"></strong></p>
+          <label class="sort">{p.sort}
+            <select id="d-sort">
+              <option value="rel" hidden disabled>{p.sortRel}</option>
+              <option value="new">{p.sortNew}</option>
+              <option value="name">{p.sortName}</option>
+            </select>
+          </label>
+        </div>
+        <div class="active-filters" id="d-active" hidden></div>
+        <div id="d-list" class="pcards"></div>
+        <div id="d-more" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:8px" hidden>
+          <button type="button" class="btn btn-outline" id="d-more-btn">{p.more}</button>
+          <span class="muted" id="d-progress" style="font-size:14px"></span>
+        </div>
+      </section>
+    </div>
+
+    <section class="dir-join" aria-labelledby="dj-h">
+      <div><h2 id="dj-h">{p.joinTitle}</h2><p>{p.joinBody}</p></div>
+      <a class="btn btn-white" href={href(lang, 'professionals/join')}>{p.joinBtn}</a>
+    </section>
+  </div>
+  <script type="application/json" id="dir-cfg" set:html={JSON.stringify(cfg)} />
+  <script src="../../../scripts/professionals.ts"></script>
+</Base>

@@ -1,0 +1,46 @@
+---
+import Base from '../../../layouts/Base.astro';
+import ProForm from '../../../components/ProForm.astro';
+import '../../../styles/pros.css';
+import type { Lang } from '../../../data/categories';
+import { PR } from '../../../i18n/pros';
+import { href } from '../../../i18n/ui';
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: 'en' } }];
+}
+const lang: Lang = Astro.params.lang === 'en' ? 'en' : 'bn';
+const p = PR[lang];
+const cfg = { lang, errs: p.errs, fixErrors: p.fixErrors, sendError: p.sendError, submitting: p.submitting, submit: p.submit, notConnected: p.notConnected, consentError: p.errs.required };
+---
+<Base lang={lang} path="professionals/join" nav="pros" title={p.jTitle} description={p.jLead}>
+  <div class="wrap join">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href={href(lang)}>{lang === 'bn' ? 'হোম' : 'Home'}</a> <span aria-hidden="true">/</span> <a href={href(lang, 'professionals')}>{p.title}</a></nav>
+    <header class="head"><h1 style="font-size: clamp(30px, 4vw, 42px)">{p.jTitle}</h1><p class="lead">{p.jLead}</p></header>
+    <ol class="steps">{p.steps.map((s) => <li>{s}</li>)}</ol>
+    <p class="privacy" role="note">{p.privacy}</p>
+    <p class="privacy" role="note" style="background:var(--sand)">{p.verifyNote}</p>
+
+    <div id="join-sent" class="sent" role="status" tabindex="-1" hidden>
+      <h2>{p.sentTitle}</h2>
+      <p>{p.sentBody}</p>
+      <div><a class="btn" href={href(lang, 'professionals')}>{p.sentBack}</a></div>
+    </div>
+
+    <form id="join-form" novalidate>
+      <ProForm lang={lang} />
+      <label class="consent"><input type="checkbox" id="join-consent" name="consent" /><span>{p.consent}</span></label>
+      <p class="formerr" id="consent-err" role="alert" hidden>{p.errs.required}</p>
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+      <p class="formerr" id="join-err" role="alert" hidden></p>
+      <div class="actions"><button type="submit" class="btn" id="join-submit" style="min-height:56px;padding:0 32px;font-size:18px">{p.submit}</button></div>
+    </form>
+  </div>
+  <script type="application/json" id="join-cfg" set:html={JSON.stringify(cfg)} />
+  <script src="../../../scripts/pro-join.ts"></script>
+</Base>
+
+<style>
+  .crumbs { font-size: 15px; color: var(--ink-3); }
+  form { display: flex; flex-direction: column; gap: 20px; }
+</style>

@@ -1,0 +1,84 @@
+---
+import Base from '../../layouts/Base.astro';
+import type { Lang } from '../../data/categories';
+import { tr, href } from '../../i18n/ui';
+import { SITE } from '../../config';
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: 'en' } }];
+}
+const lang: Lang = Astro.params.lang === 'en' ? 'en' : 'bn';
+const t = tr(lang);
+const link = (h: string) => (h === 'youtube' ? SITE.youtube : h.startsWith('#') ? h : href(lang, h.split('?')[0]) + (h.includes('?') ? '?' + h.split('?')[1] : ''));
+const external = (h: string) => h === 'youtube';
+---
+<Base lang={lang} path="support" nav="support" title={t.supportTitle} description={t.supportLead}>
+  <div class="wrap support">
+    <header class="head">
+      <h1>{t.supportTitle}</h1>
+      <p class="lead">{t.supportLead}</p>
+    </header>
+
+    <section id="sponsor" aria-labelledby="sponsor-h" class="sponsor">
+      <div class="sp-text">
+        <h2 id="sponsor-h">{t.sponsorTitle}</h2>
+        <p class="sp-lead">{t.sponsorLead}</p>
+        <ul class="sp-points">
+          {t.sponsorPoints.map((p) => <li>{p}</li>)}
+        </ul>
+        <div><a class="btn" href={href(lang, 'contact') + '?topic=sponsor'}>{t.sponsorCta}</a></div>
+      </div>
+    </section>
+
+    <section id="donate" aria-labelledby="donate-h" class="donate">
+      <h2 id="donate-h">{t.donateTitle}</h2>
+      <p>{t.donateBody}</p>
+      <div><a class="btn" href={href(lang, 'contact') + '?topic=donate'}>{t.donateWrite}</a></div>
+      <p class="safe">{t.donateSafe}</p>
+    </section>
+
+    <section aria-labelledby="ways-h" class="ways-sec">
+      <h2 id="ways-h">{t.waysTitle}</h2>
+      <ul class="ways">
+        {t.ways.map((w) => (
+          <li class="way">
+            <h3>{w.title}</h3>
+            <p>{w.body}</p>
+            <a class="btn btn-outline" href={link(w.href)} target={external(w.href) ? '_blank' : undefined} rel={external(w.href) ? 'noopener noreferrer' : undefined}>{w.cta}</a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="bottom">
+      <h2>{t.supportBottom}</h2>
+      <p>{t.supportBottomBody}</p>
+      <div><a class="btn btn-white" href={href(lang, 'contact') + '?topic=partner'}>{t.nav.contact}</a></div>
+    </section>
+  </div>
+
+</Base>
+
+<style>
+  .support { padding-top: 56px; padding-bottom: 24px; display: flex; flex-direction: column; gap: 48px; max-width: 1000px; }
+  .head { display: flex; flex-direction: column; gap: 12px; }
+  .lead { font-size: 21px; color: var(--ink-2); max-width: 36em; }
+  .ways-sec { display: flex; flex-direction: column; gap: 20px; }
+  .ways { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
+  .way { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 24px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+  .way h3 { font-size: 20px; line-height: 1.4; }
+  .way p { font-size: 16px; color: var(--ink-2); flex: 1; }
+  .sponsor { padding: 32px; border-radius: 16px; background: #fff; border: 1.5px solid var(--teal); scroll-margin-top: 16px; }
+  .sp-text { display: flex; flex-direction: column; gap: 14px; }
+  .sp-lead { font-size: 19px; max-width: 40em; color: var(--ink-2); }
+  .sp-points { display: flex; flex-direction: column; gap: 8px; max-width: 42em; padding-left: 0; }
+  .sp-points li { position: relative; padding-left: 28px; font-size: 17px; }
+  .sp-points li::before { content: ''; position: absolute; left: 4px; top: 0.6em; width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
+  .donate { display: flex; flex-direction: column; gap: 16px; padding: 32px; border-radius: 16px; background: var(--teal-tint); border: 1px solid #b5dcd5; scroll-margin-top: 16px; }
+  .donate h2 { color: #0b4a44; }
+  .donate p { max-width: 38em; color: #24524d; }
+  .safe { font-size: 15px; padding-top: 8px; border-top: 1px solid #b5dcd5; }
+  .bottom { display: flex; flex-direction: column; gap: 10px; padding: 32px; border-radius: 16px; background: var(--teal); color: #fff; }
+  .bottom p { color: #ddf0ec; }
+  @media (max-width: 640px) { .support { padding-top: 32px; gap: 36px; } .donate, .bottom, .sponsor { padding: 22px; } }
+</style>
