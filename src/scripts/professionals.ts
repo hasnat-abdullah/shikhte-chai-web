@@ -144,16 +144,24 @@ function render(resetLimit = false) {
   act.hidden = !tags.length;
   act.innerHTML = tags.join('') + (tags.length ? `<button type="button" class="linkbtn" data-clear>${esc(T.clear)}</button>` : '');
   const nActive = tags.length;
-  $('#filters-btn').textContent = (nActive ? `${T.filters} (${n(nActive)})` : $('#d-filters').classList.contains('open') ? T.hideFilters : T.showFilters);
-  if ($('#d-filters').classList.contains('open')) $('#filters-btn').textContent = `${T.hideFilters}${nActive ? ` (${n(nActive)})` : ''}`;
+  const open = $('#d-filters').classList.contains('open');
+  const btn = $('#filters-btn');
+  const badge = $('#filters-count');
+  badge.hidden = !nActive;
+  badge.textContent = n(nActive);
+  btn.setAttribute('aria-label', `${open ? T.hideFilters : T.showFilters}${nActive ? ` (${n(nActive)})` : ''}`);
+  $('#f-apply').textContent = T.showResults.replace('{n}', n(matches.length));
+  $('#f-clear').hidden = !nActive;
   void filtered;
   sync();
 }
 
 function sync() {
   const u = new URL(location.href);
+  const keep = ['view', 'need'].map((k) => [k, u.searchParams.get(k)] as const);
   u.search = '';
   const sp = u.searchParams;
+  for (const [k, v] of keep) if (v) sp.set(k, v);
   if (state.q) sp.set('q', $<HTMLInputElement>('#d-q').value.trim());
   for (const f of FACETS) if (state[f].size) sp.set(f, [...state[f]].join(','));
   if (state.district) sp.set('district', state.district);
@@ -189,9 +197,21 @@ function bind() {
   $<HTMLInputElement>('#d-q').addEventListener('input', () => { runSearch(); render(true); });
   $<HTMLSelectElement>('#d-sort').addEventListener('change', (e) => { state.sort = (e.target as HTMLSelectElement).value; render(true); });
   $('#d-more-btn').addEventListener('click', () => { state.limit += cfg.step; render(); });
+  const setFilters = (open: boolean) => {
+    $('#d-filters').classList.toggle('open', open);
+    $('#filters-btn').setAttribute('aria-expanded', String(open));
+    render();
+  };
   $('#filters-btn').addEventListener('click', () => {
-    const f = $('#d-filters'); const open = f.classList.toggle('open');
-    $('#filters-btn').setAttribute('aria-expanded', String(open)); render();
+    const open = !$('#d-filters').classList.contains('open');
+    setFilters(open);
+    if (open) $('#d-filters').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  });
+  // "Show N professionals": close the panel and bring the results into view
+  $('#f-apply').addEventListener('click', () => {
+    setFilters(false);
+    $('#filters-btn').scrollIntoView({ block: 'start', behavior: 'smooth' });
+    $('#filters-btn').focus({ preventScroll: true });
   });
   const specMore = $('#spec-more');
   const applySpec = (open: boolean) => {

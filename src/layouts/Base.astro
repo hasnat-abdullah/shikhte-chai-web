@@ -15,7 +15,7 @@ interface Props {
   description?: string;
   image?: string;
   imageSize?: [number, number];
-  nav?: 'home' | 'videos' | 'about' | 'support' | 'help' | 'pros' | 'contact' | '';
+  nav?: 'home' | 'videos' | 'about' | 'support' | 'pros' | 'contact' | '';
   noindex?: boolean;
   /** A page that exists in one language only (no language switch, no alternate links). */
   solo?: boolean;
@@ -45,6 +45,7 @@ const icon = (d: string) => d;
     {noindex && <meta name="robots" content="noindex" />}
     <meta name="theme-color" content="#0b6b63" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="canonical" href={canonical} />
     {!solo && <link rel="alternate" hreflang="bn" href={alt.bn} />}
     {!solo && <link rel="alternate" hreflang="en" href={alt.en} />}
@@ -68,15 +69,12 @@ const icon = (d: string) => d;
     <header class="site-header">
       <div class="wrap">
         <a class="brand" href={href(lang)}>
-          <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#0B6B63"/><path d="M18 27c0-6 0-9 0-12M18 15c0-4-3-7-8-7 0 4 3 7 8 7zM18 18c0-3 2.5-6 7-6 0 3.5-2.5 6-7 6z" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span class="brand-text"><span class="brand-name">{t.siteName}</span><span class="brand-sub">{t.siteNameLatin}</span></span>
+          <img class="brand-logo" src="/brand/logo-215.png" srcset="/brand/logo-215.png 1x, /brand/logo-400.png 2x" width="215" height="42" alt={lang === 'bn' ? t.siteName : `${t.siteName} (${t.siteNameLatin})`} />
         </a>
         <nav class="main-nav" aria-label={t.nav.menu}>
           <a href={href(lang)} aria-current={cur('home')}>{t.nav.home}</a>
-          <a href={href(lang, 'videos') + '?shelf=mental'} aria-current={undefined}>{t.nav.mental}</a>
-          <a href={href(lang, 'videos') + '?shelf=science'}>{t.nav.science}</a>
-          <a href={href(lang, 'professionals')} aria-current={cur('pros')}>{t.nav.pros}</a>
-          <a href={href(lang, 'find-help')} aria-current={cur('help')}>{t.nav.help}</a>
+          <a href={href(lang, 'videos')} aria-current={cur('videos')}>{t.nav.videos}</a>
+          <a class="strong" href={href(lang, 'professionals')} aria-current={cur('pros')}>{t.nav.pros}</a>
           <a href={href(lang, 'support')} aria-current={cur('support')}>{t.nav.support}</a>
         </nav>
         <div class="header-actions">
@@ -86,14 +84,11 @@ const icon = (d: string) => d;
             <summary class="menu-btn" aria-label={t.nav.menuBtn}>
               <svg class="i-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
               <svg class="i-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
-              <span>{t.nav.menuBtn}</span>
             </summary>
             <nav class="menu-panel" aria-label={t.nav.menu}>
               <a href={href(lang)} aria-current={cur('home')}>{t.nav.home}</a>
-              <a href={href(lang, 'videos') + '?shelf=mental'}>{t.nav.mental}</a>
-              <a href={href(lang, 'videos') + '?shelf=science'}>{t.nav.science}</a>
-              <a href={href(lang, 'professionals')} aria-current={cur('pros')}>{t.nav.pros}</a>
-              <a href={href(lang, 'find-help')} aria-current={cur('help')}>{t.nav.help}</a>
+              <a href={href(lang, 'videos')} aria-current={cur('videos')}>{t.nav.videos}</a>
+              <a class="strong" href={href(lang, 'professionals')} aria-current={cur('pros')}>{t.nav.pros}</a>
               <a href={href(lang, 'support')} aria-current={cur('support')}>{t.nav.support}</a>
               <a href={href(lang, 'about')} aria-current={cur('about')}>{t.nav.about}</a>
               <a class="btn menu-cta" href={href(lang, 'contact')}>{t.nav.contact}</a>
@@ -113,10 +108,7 @@ const icon = (d: string) => d;
           <p class="small">{t.disclaimer}</p>
         </div>
         <nav class="footer-nav" aria-label={t.footerLinks}>
-          <a href={href(lang, 'videos')}>{t.allVideos}</a>
           <a href={href(lang, 'about')}>{t.nav.about}</a>
-          <a href={href(lang, 'professionals')}>{t.nav.pros}</a>
-          <a href={href(lang, 'find-help')}>{t.nav.help}</a>
           <a href={href(lang, 'support')}>{t.nav.support}</a>
           <a href={href(lang, 'contact')}>{t.contactLink}</a>
           <a href={SITE.youtube} target="_blank" rel="noopener noreferrer">{t.youtubeChannel}</a>
@@ -125,7 +117,7 @@ const icon = (d: string) => d;
       </div>
       <div class="wrap footer-bottom">
         <span>{t.rights(year)}</span>
-        <span>{t.emergencyShort}: <a class="tel" href={`tel:${SITE.emergencyNumber}`}>{num(SITE.emergencyNumber, lang)}</a> · {t.helplineName}: <a class="tel" href={`tel:${SITE.helpline.number}`}>{lang === 'bn' ? num(SITE.helpline.display, 'bn') : SITE.helpline.display}</a></span>
+        <span>{t.emergencyShort}: <a class="tel" href={`tel:${SITE.emergencyNumber}`}>{num(SITE.emergencyNumber, lang)}</a></span>
       </div>
     </footer>
 
@@ -147,7 +139,7 @@ const icon = (d: string) => d;
       <a href={href(lang)} aria-current={cur('home')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon(ICON.home)} /></svg>{t.nav.home}</a>
       <a href={href(lang, 'videos')} aria-current={cur('videos')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon(ICON.grid)} /></svg>{t.nav.topics}</a>
       <a href={href(lang, 'videos') + '?focus=search'}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d={icon(ICON.search)} /></svg>{t.nav.search}</a>
-      <a href={href(lang, 'find-help')} aria-current={cur('help')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon(ICON.lifebuoy)} /></svg>{t.nav.helpShort}</a>
+      <a href={href(lang, 'professionals') + '?view=places'} aria-current={cur('pros')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon(ICON.lifebuoy)} /></svg>{t.nav.helpShort}</a>
       <a href={href(lang, 'contact')} aria-current={cur('contact')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon(ICON.chat)} /></svg>{t.nav.message}</a>
     </nav>
   </body>

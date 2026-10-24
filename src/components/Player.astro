@@ -15,28 +15,49 @@ const t = tr(lang);
 </div>
 
 <script>
+  // The thumbnail stays on screen, with a spinner, until the YouTube player has loaded. Swapping it for an empty box
+  // made it look like nothing had happened, so people clicked a second time.
   document.querySelectorAll<HTMLButtonElement>('.player-btn').forEach((btn) => {
+    let warmed = false;
+    const warm = () => {
+      if (warmed) return;
+      warmed = true;
+      const l = document.createElement('link');
+      l.rel = 'preconnect'; l.href = 'https://www.youtube-nocookie.com';
+      document.head.appendChild(l);
+    };
+    btn.addEventListener('pointerenter', warm, { once: true });
+    btn.addEventListener('touchstart', warm, { once: true, passive: true });
     btn.addEventListener('click', () => {
+      if (btn.classList.contains('loading')) return;
+      btn.classList.add('loading');
+      btn.setAttribute('aria-busy', 'true');
       const iframe = document.createElement('iframe');
-      iframe.src = `https://www.youtube-nocookie.com/embed/${btn.dataset.id}?autoplay=1&rel=0`;
+      iframe.src = `https://www.youtube-nocookie.com/embed/${btn.dataset.id}?autoplay=1&playsinline=1&rel=0`;
       iframe.title = btn.dataset.title ?? '';
       iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen';
       iframe.allowFullscreen = true;
       iframe.referrerPolicy = 'strict-origin-when-cross-origin';
-      btn.replaceWith(iframe);
-      iframe.focus();
+      iframe.addEventListener('load', () => { btn.remove(); iframe.classList.add('ready'); iframe.focus(); }, { once: true });
+      btn.parentElement!.appendChild(iframe);
     });
   });
 </script>
 
 <style>
   .player { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; width: 100%; }
-  .player :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .player :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; opacity: 0; }
+  .player :global(iframe.ready) { opacity: 1; }
   .player-btn { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; background: none; cursor: pointer; }
   .player-btn img { width: 100%; height: 100%; object-fit: cover; }
   .player-play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 84px; height: 84px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 12px rgba(0,0,0,0.25); }
   .player-play svg { width: 32px; height: 32px; }
   .player-btn:hover .player-play { background: #eaf5f3; }
+  .player-btn.loading { cursor: progress; }
+  .player-btn.loading .player-play svg { display: none; }
+  .player-btn.loading .player-play::after { content: ''; width: 34px; height: 34px; border: 4px solid #cfe5e2; border-top-color: #0b6b63; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .player-btn.loading .player-play::after { animation-duration: 2.4s; } }
   .player-note { position: absolute; left: 0; right: 0; bottom: 0; padding: 24px 16px 12px; text-align: left; font-size: 14px; color: #fff; background: linear-gradient(transparent, rgba(0,0,0,0.65)); }
   @media (max-width: 640px) { .player { border-radius: 0; margin: 0 -24px; width: calc(100% + 48px); } .player-play { width: 68px; height: 68px; } }
 </style>

@@ -211,7 +211,7 @@ const latest = VIDEOS.filter((v) => (meta(v.id)?.date ?? '') >= yearAgo).slice(0
       <p>{t.helpBody}</p>
       <div class="chips">
         <a class="btn btn-warm" href={`tel:${SITE.emergencyNumber}`}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={ICON.phone} /></svg>{t.callEmergency(num(SITE.emergencyNumber, lang))}</a>
-        <a class="btn btn-outline" href={href(lang, 'find-help')}>{t.findHelpCta}</a>
+        <a class="btn btn-outline" href={href(lang, 'professionals') + '?view=places'}>{t.findHelpCta}</a>
       </div>
     </div>
     <div class="callout-teal">

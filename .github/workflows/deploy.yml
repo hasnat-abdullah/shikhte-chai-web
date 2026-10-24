@@ -22,7 +22,6 @@ jobs:
       - uses: withastro/action@v3
         env:
           PUBLIC_WEB3FORMS_KEY: ${{ secrets.PUBLIC_WEB3FORMS_KEY }}
-          PUBLIC_YOUTUBE_API_KEY: ${{ secrets.PUBLIC_YOUTUBE_API_KEY }}
           PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
           PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
   deploy:

@@ -1,52 +1,21 @@
 ---
 import type { Lang } from '../data/categories';
 import { tr } from '../i18n/ui';
-import { SITE } from '../config';
 interface Props { id: string; lang: Lang }
 const { id, lang } = Astro.props;
 const t = tr(lang);
-const cfg = {
-  id, lang, key: SITE.ytKey,
-  countTpl: t.commentsCount, likesTpl: t.likes, repliesTpl: t.replies,
-  loading: t.commentsLoading, empty: t.commentsEmpty, off: t.commentsOff, error: t.commentsError,
-};
 const yt = `https://www.youtube.com/watch?v=${id}`;
 ---
 <section class="comments" aria-labelledby="cm-h" id="comments">
-  <div class="cm-head">
-    <h2 id="cm-h">{t.commentsTitle} <span class="muted cm-count" id="cm-count"></span></h2>
-    <a class="cm-write" href={yt} rel="noopener" target="_blank">{t.commentsWrite}</a>
+  <div>
+    <h2 id="cm-h">{t.commentsTitle}</h2>
+    <p>{t.commentsFallback}</p>
   </div>
-  <p class="cm-note">{t.commentsNote}</p>
-  {SITE.ytKey ? (
-    <>
-      <p class="cm-status" id="cm-status" role="status">{t.commentsLoading}</p>
-      <ol class="cm-list" id="cm-list"></ol>
-      <div class="cm-more" id="cm-more-wrap" hidden><button type="button" class="btn btn-outline" id="cm-more">{t.commentsMore}</button></div>
-      <script type="application/json" id="cm-cfg" set:html={JSON.stringify(cfg)} />
-      <script src="../scripts/comments.ts"></script>
-    </>
-  ) : (
-    <p class="cm-status">{t.commentsFallback}</p>
-  )}
+  <a class="btn btn-outline" href={yt} rel="noopener" target="_blank">{t.commentsWrite}</a>
 </section>
 
 <style>
-  .comments { display: flex; flex-direction: column; gap: 14px; padding-top: 8px; }
-  .cm-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px; }
-  .cm-head h2 { font-size: 24px; }
-  .cm-count { font-size: 18px; font-weight: 500; }
-  .cm-write { font-weight: 600; font-size: 16px; padding: 8px 0; }
-  .cm-note { font-size: 14px; color: var(--ink-3); max-width: 44em; }
-  .cm-status { color: var(--ink-3); }
-  .cm-list { display: flex; flex-direction: column; }
-  .cm-more { padding-top: 8px; }
-  .comments :global(.cm-item) { display: flex; gap: 14px; padding: 16px 0; border-top: 1px solid var(--line); }
-  .comments :global(.cm-avatar) { flex: 0 0 40px; width: 40px; height: 40px; border-radius: 50%; background: var(--sand); object-fit: cover; }
-  .comments :global(.cm-body) { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-  .comments :global(.cm-meta) { font-size: 14px; color: var(--ink-3); display: flex; flex-wrap: wrap; gap: 0 10px; }
-  .comments :global(.cm-meta strong) { color: var(--ink); font-size: 15px; }
-  .comments :global(.cm-text) { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 17px; line-height: 1.65; }
-  .comments :global(.cm-foot) { font-size: 14px; color: var(--ink-3); display: flex; gap: 14px; }
-  .comments :global(.cm-foot a) { color: var(--teal); font-weight: 600; }
+  .comments { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); }
+  .comments h2 { font-size: 22px; }
+  .comments p { color: var(--ink-3); font-size: 16px; }
 </style>

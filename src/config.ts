@@ -4,8 +4,6 @@ export const SITE = {
   youtube: 'https://www.youtube.com/@ShikhteChaiBD',
   // Form service key (Web3Forms), set as PUBLIC_WEB3FORMS_KEY. Messages are delivered to the inbox the key was created for.
   formKey: import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '',
-  // YouTube Data API key (restricted to this domain) for live view and comment counts. Set as PUBLIC_YOUTUBE_API_KEY.
-  ytKey: import.meta.env.PUBLIC_YOUTUBE_API_KEY ?? '',
   // Supabase project that stores professionals' listings (see supabase/migrations). Both values are public by design;
   // the database's row-level security decides what visitors can read and write.
   supabase: { url: import.meta.env.PUBLIC_SUPABASE_URL ?? '', key: import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '' },

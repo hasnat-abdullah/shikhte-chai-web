@@ -15,7 +15,7 @@ export function formatViews(n: number, lang: Lang): string {
 
 export function formatDate(iso: string, lang: Lang): string {
   if (!iso) return '';
-  return new Intl.DateTimeFormat(lang === 'bn' ? 'bn-BD' : 'en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(iso + 'T12:00:00Z'));
+  return new Intl.DateTimeFormat(lang === 'bn' ? 'bn-BD' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(iso + 'T12:00:00Z'));
 }
 
 export function formatDuration(secs: number): string {

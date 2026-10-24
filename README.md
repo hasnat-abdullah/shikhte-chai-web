@@ -25,15 +25,9 @@ npm run build     # outputs dist/
 
 A GitHub Action (`.github/workflows/sync-videos.yml`) runs this every Monday and opens a pull request. Merging it publishes the update. You can also run it by hand from the repository's Actions tab. If your repository blocks Actions from opening pull requests, allow it under Settings, Actions, General, Workflow permissions.
 
-## Live views and comments
+## Views and comments
 
-Watch pages fetch the current view count and the latest comments straight from YouTube in the visitor's browser, so they are always up to date. This needs a free YouTube Data API key:
-
-1. In [Google Cloud Console](https://console.cloud.google.com/), create a project and enable **YouTube Data API v3**.
-2. Create an **API key**. Under restrictions, set *Websites* to `https://shikhtechai.com/*` (and `http://localhost:4321/*` for local work), and *API restrictions* to YouTube Data API v3 only. The key is visible in the page source, so these restrictions are what protect it.
-3. Locally: put `PUBLIC_YOUTUBE_API_KEY=your-key` in `.env`. On GitHub: add the repository secret `PUBLIC_YOUTUBE_API_KEY`.
-
-Without a key, watch pages show the build-time view count and a "read comments on YouTube" note. The free quota (10,000 units a day) covers roughly 5,000 watch-page visits a day; each visit uses 2 units, and results are cached in the browser for 5 minutes. Comments are shown as YouTube returns them and are not moderated by the site.
+Watch pages show the view count from the last `npm run sync-videos` run (weekly via the Action), and link to the video on YouTube for comments. No YouTube API key is needed.
 
 ## Professionals directory
 
