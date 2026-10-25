@@ -1,0 +1,11 @@
+---
+// A video thumbnail: AVIF for browsers that can show it, WebP otherwise. Extra attributes go on the <img>.
+import type { HTMLAttributes } from 'astro/types';
+import { thumb, thumbSrcset, hasLocalThumb } from '../data/videos';
+interface Props extends HTMLAttributes<'img'> { id: string; sizes: string }
+const { id, sizes, ...img } = Astro.props;
+---
+<picture>
+  {hasLocalThumb(id) && <source type="image/avif" srcset={thumbSrcset(id, 'avif')} sizes={sizes} />}
+  <img src={thumb(id)} srcset={thumbSrcset(id)} sizes={sizes} alt="" {...img} />
+</picture>

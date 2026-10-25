@@ -1,14 +1,15 @@
 ---
 import type { Lang } from '../data/categories';
-import { thumb } from '../data/videos';
+import Thumb from './Thumb.astro';
 import { tr } from '../i18n/ui';
 interface Props { id: string; name: string; lang: Lang; bg?: string }
 const { id, name, lang, bg = '#1f4a68' } = Astro.props;
 const t = tr(lang);
 ---
 <div class="player" style={`background:${bg}`}>
-  <button type="button" class="player-btn" data-id={id} data-title={name} aria-label={`${t.play}: ${name}`}>
-    <img src={thumb(id)} alt="" width="480" height="360" />
+  <button type="button" class="player-btn" data-id={id} data-title={name}>
+    <span class="sr-only">{t.play}: {name}.</span>
+    <Thumb id={id} sizes="(min-width: 1200px) 760px, 100vw" width="480" height="270" fetchpriority="high" />
     <span class="player-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#0b6b63" /></svg></span>
     <span class="player-note">{t.playNote}</span>
   </button>

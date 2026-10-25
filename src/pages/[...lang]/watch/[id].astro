@@ -4,10 +4,12 @@ import VideoCard from '../../../components/VideoCard.astro';
 import Player from '../../../components/Player.astro';
 import type { Lang } from '../../../data/categories';
 import { CAT, CATEGORIES } from '../../../data/categories';
-import { VIDEOS, title, thumb, shareImage, byCat, meta, formatViews, formatDate, formatDuration, cleanDesc } from '../../../data/videos';
+import { VIDEOS, title, shareImage, isoDuration, byCat, meta, formatViews, formatDate, formatDuration, cleanDesc } from '../../../data/videos';
 import { tr, num, href } from '../../../i18n/ui';
 import { SITE } from '../../../config';
 import Comments from '../../../components/Comments.astro';
+import JsonLd from '../../../components/JsonLd.astro';
+import Thumb from '../../../components/Thumb.astro';
 
 export function getStaticPaths() {
   return [undefined, 'en'].flatMap((lang) => VIDEOS.map((v) => ({ params: { lang, id: v.id } })));
@@ -39,12 +41,53 @@ const m = meta(v.id);
 const desc = cleanDesc(m?.desc ?? '');
 const PAGE = 5;
 const pages = Math.ceil(series.length / PAGE);
+// The first page of the topic list and the clamped description are rendered in the HTML, so nothing moves
+// when the script starts (it used to shift the page by up to a tenth of the screen).
+const page0 = Math.floor(idx / PAGE);
+const longDesc = desc.length > 160 || desc.split('\n').length > 3;
 const arrowless = (x: string) => x.replace(/[←→]/g, '').trim();
 const dig = (x: string) => (lang === 'bn' ? x.replace(/\d/g, (d) => '০১২৩৪৫৬৭৮৯'[+d]) : x);
 const when = m ? formatDate(m.date, lang) : '';
 const length = m ? dig(formatDuration(m.secs)) : '';
+// Search-result snippet: YouTube's own description when it is a real sentence in the page's language, otherwise a
+// written one (English pages always use the written one, since the YouTube descriptions are in Bangla).
+const clip = (s: string, n = 158) => (s.length <= n ? s : s.slice(0, n).replace(/\s+\S*$/, '') + '…');
+const firstLine = desc.split('\n')[0].replace(/^[•\-–\s]+/, '');
+const metaDesc = clip(lang === 'bn' && firstLine.length >= 70 ? firstLine : t.watchMeta(title(v, lang), c[lang]));
+const abs = (path: string) => new URL(href(lang, path), SITE.url).href;
+const ld = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'VideoObject',
+      '@id': `${pageUrl}#video`,
+      name: title(v, lang),
+      description: desc || `${title(v, lang)} · ${c[lang]}`,
+      thumbnailUrl: [shareImage(v.id).url, `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`],
+      ...(m?.date && { uploadDate: `${m.date}T00:00:00+06:00` }),
+      ...(m?.secs && { duration: isoDuration(m.secs) }),
+      embedUrl: `https://www.youtube.com/embed/${v.id}`,
+      url: pageUrl,
+      inLanguage: 'bn',
+      isFamilyFriendly: true,
+      genre: c[lang],
+      ...(m && { interactionStatistic: { '@type': 'InteractionCounter', interactionType: { '@type': 'WatchAction' }, userInteractionCount: m.views } }),
+      publisher: { '@id': `${SITE.url}/#org` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: t.nav.home, item: abs('') },
+        { '@type': 'ListItem', position: 2, name: t.nav.videos, item: abs('videos') },
+        { '@type': 'ListItem', position: 3, name: c[lang], item: abs('videos') + `?cat=${v.cat}` },
+        { '@type': 'ListItem', position: 4, name: title(v, lang) },
+      ],
+    },
+  ],
+};
 ---
-<Base lang={lang} path={`watch/${v.id}`} nav="videos" title={title(v, lang)} description={desc ? desc.split('\n')[0].slice(0, 200) : `${title(v, lang)} · ${c[lang]}`} image={shareImage(v.id).url} imageSize={shareImage(v.id).size}>
+<Base lang={lang} path={`watch/${v.id}`} nav="videos" title={title(v, lang)} description={metaDesc} image={shareImage(v.id).url} imageSize={shareImage(v.id).size} ogType="video.other">
+  <JsonLd slot="head" data={[ld]} />
   <div class="wrap watch">
     <nav class="crumbs" aria-label={t.breadcrumb}>
       <a href={href(lang, 'videos')}>{t.nav.videos}</a> <span aria-hidden="true">/</span>
@@ -82,9 +125,9 @@ const length = m ? dig(formatDuration(m.secs)) : '';
             </a>
           </p>
           {desc && (
-            <div class="desc" id="desc">
+            <div class:list={['desc', { clamped: longDesc }]} id="desc">
               <p id="desc-text">{desc}</p>
-              <button type="button" class="desc-toggle" id="desc-toggle" data-more={t.descMore} data-less={t.descLess} aria-expanded="false" aria-controls="desc-text" hidden>{t.descMore}</button>
+              <button type="button" class="desc-toggle" id="desc-toggle" data-more={t.descMore} data-less={t.descLess} aria-expanded="false" aria-controls="desc-text" hidden={!longDesc}>{t.descMore}</button>
             </div>
           )}
         </div>
@@ -130,22 +173,22 @@ const length = m ? dig(formatDuration(m.secs)) : '';
           <span class="muted small">{num(idx + 1, lang)} / {num(series.length, lang)}</span>
         </div>
         <ol class="series" id="series" data-size={PAGE}>
-          {series.map((s) => (
-            <li>
+          {series.map((s, i) => (
+            <li class={pages > 1 && Math.floor(i / PAGE) !== page0 ? 'off' : undefined}>
               <a href={href(lang, `watch/${s.id}`)} aria-current={s.id === v.id ? 'true' : undefined} class={s.id === v.id ? 'cur' : ''}>
-                <span class="mini"><img src={thumb(s.id)} alt="" width="132" height="99" loading="lazy" /></span>
+                <span class="mini"><Thumb id={s.id} sizes="132px" width="132" height="74" loading="lazy" decoding="async" /></span>
                 <span class="mt"><span class="mtitle">{title(s, lang)}</span></span>
               </a>
             </li>
           ))}
         </ol>
         {pages > 1 && (
-          <div class="pager" id="pager" data-bn={lang === 'bn' ? '1' : undefined} hidden>
-            <button type="button" id="pg-prev" aria-label={arrowless(t.prev)}>
+          <div class="pager" id="pager" data-bn={lang === 'bn' ? '1' : undefined} data-page={page0}>
+            <button type="button" id="pg-prev" aria-label={arrowless(t.prev)} disabled={page0 === 0}>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
             </button>
-            <span class="pg-info" id="pg-info" aria-live="polite"></span>
-            <button type="button" id="pg-next" aria-label={arrowless(t.next)}>
+            <span class="pg-info" id="pg-info" aria-live="polite">{num(page0 + 1, lang)} / {num(pages, lang)}</span>
+            <button type="button" id="pg-next" aria-label={arrowless(t.next)} disabled={page0 === pages - 1}>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
             </button>
           </div>
@@ -161,17 +204,15 @@ const length = m ? dig(formatDuration(m.secs)) : '';
     // Long descriptions: three lines, with a toggle.
     const desc = document.getElementById('desc');
     const dBtn = document.getElementById('desc-toggle') as HTMLButtonElement | null;
-    if (desc && dBtn) {
-      desc.classList.add('clamped');
+    if (desc && dBtn && desc.classList.contains('clamped')) {
       const text = document.getElementById('desc-text')!;
       if (text.scrollHeight > text.clientHeight + 1) {
-        dBtn.hidden = false;
         dBtn.addEventListener('click', () => {
           const open = desc.classList.toggle('clamped') === false;
           dBtn.textContent = open ? dBtn.dataset.less! : dBtn.dataset.more!;
           dBtn.setAttribute('aria-expanded', String(open));
         });
-      } else desc.classList.remove('clamped');
+      } else { desc.classList.remove('clamped'); dBtn.hidden = true; }
     }
 
     // Topic list: show a few videos at a time, starting on the page that holds the current one.
@@ -181,23 +222,20 @@ const length = m ? dig(formatDuration(m.secs)) : '';
       const items = [...list.children] as HTMLElement[];
       const size = Number(list.dataset.size);
       const pages = Math.ceil(items.length / size);
-      const here = items.findIndex((li) => li.querySelector('[aria-current]'));
-      let page = Math.max(0, Math.floor(here / size));
+      let page = Number(pager.dataset.page);
       const bn = pager.dataset.bn === '1';
       const num = (x: number) => (bn ? String(x).replace(/\d/g, (d) => '০১২৩৪৫৬৭৮৯'[+d]) : String(x));
       const prev = document.getElementById('pg-prev') as HTMLButtonElement;
       const next = document.getElementById('pg-next') as HTMLButtonElement;
       const info = document.getElementById('pg-info')!;
       const show = () => {
-        items.forEach((li, i) => { li.hidden = Math.floor(i / size) !== page; });
+        items.forEach((li, i) => { li.classList.toggle('off', Math.floor(i / size) !== page); });
         info.textContent = `${num(page + 1)} / ${num(pages)}`;
         prev.disabled = page === 0;
         next.disabled = page === pages - 1;
       };
       prev.addEventListener('click', () => { page--; show(); });
       next.addEventListener('click', () => { page++; show(); });
-      pager.hidden = false;
-      show();
     }
     const btn = document.getElementById('copy') as HTMLButtonElement | null;
     btn?.addEventListener('click', async () => {
@@ -225,7 +263,8 @@ const length = m ? dig(formatDuration(m.secs)) : '';
   .pill svg { width: 16px; }
   .desc { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
   .desc p { max-width: 44em; white-space: pre-line; color: var(--ink-2); font-size: 17px; line-height: 1.7; }
-  .desc.clamped p { white-space: normal; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  :global(html:not(.js)) .desc-toggle { display: none; }
+  :global(.js) .desc.clamped p { white-space: normal; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
   .desc-toggle { background: none; border: 0; padding: 8px 0; min-height: 44px; color: var(--teal); font-weight: 700; font-size: 16px; cursor: pointer; }
   .share { display: flex; flex-wrap: wrap; gap: 8px; }
   .sbtn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid #cfcac0; background: #fff; border-radius: 10px; font-size: 15px; font-weight: 600; color: var(--ink); text-decoration: none; cursor: pointer; }
@@ -246,7 +285,8 @@ const length = m ? dig(formatDuration(m.secs)) : '';
   .side-head h2 { font-size: 20px; }
   .small { font-size: 14px; }
   .pager { display: flex; align-items: center; justify-content: center; gap: 16px; }
-  .pager[hidden] { display: none; }
+  :global(html:not(.js)) .pager { display: none; }
+  :global(.js) .series li.off { display: none; }
   .pager button { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; padding: 0; border: 1.5px solid var(--teal); border-radius: 12px; background: #fff; color: var(--teal); cursor: pointer; }
   .pager button:hover:not(:disabled) { background: var(--teal-tint); }
   .pager button:disabled { border-color: var(--line); color: var(--ink-3); opacity: 0.5; cursor: default; }

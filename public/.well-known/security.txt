@@ -1,0 +1,5 @@
+# Found a security problem on shikhtechai.com? Please tell us privately using the message form (choose "Feedback").
+Contact: https://shikhtechai.com/contact/?topic=feedback
+Expires: 2027-10-25T00:00:00.000Z
+Preferred-Languages: bn, en
+Canonical: https://shikhtechai.com/.well-known/security.txt

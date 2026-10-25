@@ -6,7 +6,20 @@ Static site for [shikhtechai.com](https://shikhtechai.com), built with Astro. Ba
 npm install
 npm run dev       # http://localhost:4321
 npm run build     # outputs dist/
+npm run verify    # build + SEO / accessibility / security checks (CI runs this before every deploy)
+npm run audit     # after a build: real-browser checks at phone to desktop widths + Lighthouse scores
 ```
+
+## Speed, search and security
+
+- **Speed.** CSS is inlined into each page (nothing blocks the first paint). Video thumbnails are served from the site itself as AVIF with a WebP fallback (`public/thumbs/`, made by `npm run thumbs`), so a visitor's browser does not contact YouTube until they press play. Chrome and Edge prerender a link while the pointer rests on it, and pages cross-fade instead of flashing.
+- **Search.** Every page has its own title, description, canonical link and Bangla/English alternates. Video pages carry `VideoObject` and breadcrumb structured data (eligible for Google's video results); the home page carries `WebSite` (with site search) and `Organization`. `npm run verify` fails on duplicate titles, broken links, missing descriptions and invalid structured data.
+- **Security.** Every page has a Content-Security-Policy (`integrations/csp.mjs`) that allows only the site's own scripts, by hash. The directory's database rules are in `supabase/migrations` (visitors can only read approved listings and submit pending ones, with limits per person and per hour). Dependabot opens weekly update PRs; CI fails on high-severity `npm audit` findings.
+- **Pull requests** are built, checked and audited in Chrome by `.github/workflows/deploy.yml`; only `main` is deployed.
+
+## Working with Claude Code
+
+`CLAUDE.md` is the guide for coding agents. `.claude/` holds project settings (the agent may not read `.env`, push, or touch the live database), a hook that runs `npm run verify` before an agent finishes, the skills `/audit`, `/review-videos` and `/ship`, and the review subagents `seo-auditor`, `ux-reviewer`, `security-reviewer` and `content-curator`.
 
 ## Content
 
@@ -21,7 +34,7 @@ npm run build     # outputs dist/
 
 ## Keeping videos up to date
 
-`npm run sync-videos` reads the channel feed and each video page (no API key needed). It removes videos that are now private or deleted, adds new uploads with a guessed topic and `"review": true`, and refreshes views, dates, durations and descriptions. After running it, check new entries: confirm the topic, write the English title, then delete the `review` flag.
+`npm run sync-videos` reads the channel feed and each video page (no API key needed), then makes thumbnails for new videos. It removes videos that are now private or deleted, adds new uploads with a guessed topic and `"review": true`, and refreshes views, dates, durations and descriptions. After running it, check new entries: confirm the topic, write the English title, then delete the `review` flag.
 
 A GitHub Action (`.github/workflows/sync-videos.yml`) runs this every Monday and opens a pull request. Merging it publishes the update. You can also run it by hand from the repository's Actions tab. If your repository blocks Actions from opening pull requests, allow it under Settings, Actions, General, Workflow permissions.
 

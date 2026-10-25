@@ -90,6 +90,7 @@ export const T = {
     // library
     libTitle: 'ভিডিও লাইব্রেরি',
     libLead: (n: string) => `${n}টি ভিডিও। বিষয় বেছে নিন, অথবা সরাসরি খুঁজুন।`,
+    libMeta: (n: string) => `${n}টি বিনামূল্যে বাংলা ভিডিও: দুশ্চিন্তা, বিষণ্ণতা, আসক্তি, সম্পর্ক, সন্তান লালনপালন, বিজ্ঞান ও পড়াশোনা। বিষয় বেছে নিন বা খুঁজুন।`,
     breadcrumb: 'ব্রেডক্রাম্ব',
     libSearchLabel: 'ভিডিও খুঁজুন',
     libSearchPlaceholder: 'শিরোনাম লিখুন, যেমন: রাগ, OCD, অটিজম',
@@ -175,6 +176,8 @@ export const T = {
     sortViews: 'সবচেয়ে বেশি দেখা',
     sortOld: 'পুরনো আগে',
     descMore: 'আরও পড়ুন',
+    // Meta description for a video page when YouTube's description is missing or too short to describe it.
+    watchMeta: (title: string, topic: string) => `${title}: ${topic} বিষয়ে সহজ বাংলায় বিনামূল্যে ভিডিও। শিখতে চাই: কিশোর-তরুণদের জন্য মানসিক স্বাস্থ্য ও বিজ্ঞানের ভিডিও।`,
     descLess: 'কম দেখুন',
     latestTitle: 'নতুন ভিডিও',
     popularLabel: 'জনপ্রিয়',
@@ -263,6 +266,7 @@ export const T = {
     rights: (y: number) => `© ${y} Shikhte Chai · shikhtechai.com`,
     libTitle: 'Video library',
     libLead: (n: string) => `${n} videos. Pick a topic, or search directly.`,
+    libMeta: (n: string) => `${n} free videos in Bangla on anxiety, depression, addiction, relationships, parenting, science and study. Browse by topic or search.`,
     breadcrumb: 'Breadcrumb',
     libSearchLabel: 'Search videos',
     libSearchPlaceholder: 'Type a title, for example: anger, OCD, autism',
@@ -345,6 +349,7 @@ export const T = {
     sortViews: 'Most viewed',
     sortOld: 'Oldest first',
     descMore: 'Read more',
+    watchMeta: (title: string, topic: string) => `“${title}”: a free video in Bangla on ${topic.toLowerCase()}, from Shikhte Chai. Plain-language mental health and science for teens and young adults.`,
     descLess: 'Show less',
     latestTitle: 'New videos',
     popularLabel: 'Popular',

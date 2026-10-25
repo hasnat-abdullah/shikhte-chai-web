@@ -1,0 +1,8 @@
+---
+// Structured data for search engines (schema.org JSON-LD). Put it in the page head: <JsonLd slot="head" data={...} />
+interface Props { data: Record<string, unknown> | Record<string, unknown>[] }
+const { data } = Astro.props;
+// "<" is escaped so a title can never close the script tag.
+const json = JSON.stringify(Array.isArray(data) ? data : { '@context': 'https://schema.org', ...data }).replace(/</g, '\\u003c');
+---
+<script type="application/ld+json" set:html={json} />

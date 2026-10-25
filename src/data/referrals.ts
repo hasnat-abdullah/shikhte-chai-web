@@ -38,18 +38,6 @@ export const REFERRALS: Referral[] = [
     checked: '2026-10-24',
   },
   {
-    id: 'talk-hope',
-    kind: 'helpline',
-    needs: ['talk'],
-    name: { bn: 'টক হোপ', en: 'Talk Hope' },
-    about: { bn: 'মানসিক স্বাস্থ্য ও আত্মহত্যা প্রতিরোধ হেল্পলাইন।', en: 'Mental health and suicide prevention helpline.' },
-    phones: [{ number: '09638881888' }],
-    cost: { bn: 'বিনামূল্যে ও গোপনীয় (হেল্পলাইন ডিরেক্টরি অনুযায়ী)', en: 'Free and confidential (per helpline directory)' },
-    how: { bn: 'কল করার সময় ও ভাষা সম্পর্কে ফোনে জেনে নিন।', en: 'Ask by phone about call times and languages.' },
-    source: 'Find A Helpline',
-    checked: '2026-10-24',
-  },
-  {
     id: 'child-helpline',
     kind: 'helpline',
     needs: ['child', 'talk'],

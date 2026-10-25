@@ -1,0 +1,15 @@
+{
+  "name": "শিখতে চাই · Shikhte Chai",
+  "short_name": "শিখতে চাই",
+  "description": "মানসিক স্বাস্থ্য ও বিজ্ঞানের ভিডিও, সহজ বাংলায়",
+  "lang": "bn",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fbfaf7",
+  "theme_color": "#0b6b63",
+  "icons": [
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any" },
+    { "src": "/apple-touch-icon.png", "type": "image/png", "sizes": "180x180" }
+  ]
+}

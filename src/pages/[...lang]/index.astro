@@ -3,12 +3,13 @@ import Base from '../../layouts/Base.astro';
 import VideoCard from '../../components/VideoCard.astro';
 import type { Lang } from '../../data/categories';
 import { CATEGORIES, CAT } from '../../data/categories';
-import { VIDEOS, thumb, title, countFor, catCount, meta, shelfOf, byCat } from '../../data/videos';
+import { VIDEOS, thumb, thumbSrcset, hasLocalThumb, title, countFor, catCount, meta, shelfOf, byCat } from '../../data/videos';
 import { START_PATH, FEELINGS } from '../../data/curated';
 import { tr, num, href } from '../../i18n/ui';
 import { SITE } from '../../config';
 import { ICON } from '../../components/icons';
 import Helpline from '../../components/Helpline.astro';
+import JsonLd from '../../components/JsonLd.astro';
 
 export function getStaticPaths() {
   return [{ params: { lang: undefined } }, { params: { lang: 'en' } }];
@@ -22,7 +23,7 @@ const get = (id: string) => byId.get(id)!;
 const heroPool = VIDEOS.filter((v) => shelfOf(v) === 'mental');
 const featured = [...heroPool].sort((a, b) => (meta(b.id)?.views ?? 0) - (meta(a.id)?.views ?? 0))[0];
 const fc = CAT[featured.cat];
-const heroData = heroPool.map((v) => ({ id: v.id, href: href(lang, `watch/${v.id}`), t: title(v, lang), c: CAT[v.cat][lang], bg: CAT[v.cat].bg }));
+const heroData = heroPool.map((v) => ({ id: v.id, href: href(lang, `watch/${v.id}`), t: title(v, lang), c: CAT[v.cat][lang], bg: CAT[v.cat].bg, src: thumb(v.id), set: thumbSrcset(v.id), avif: hasLocalThumb(v.id) ? thumbSrcset(v.id, 'avif') : '' }));
 const mental = CATEGORIES.filter((c) => c.shelf === 'mental');
 const science = CATEGORIES.filter((c) => c.shelf === 'science');
 const nMental = countFor('mental');
@@ -32,8 +33,36 @@ const popular = VIDEOS.filter((v) => shelfOf(v) === 'mental').sort((a, b) => (me
 // Show a "new videos" row only when the channel has uploaded within the last year.
 const yearAgo = new Date(Date.now() - 365 * 86400000).toISOString().slice(0, 10);
 const latest = VIDEOS.filter((v) => (meta(v.id)?.date ?? '') >= yearAgo).slice(0, 4);
+const home = new URL(href(lang), SITE.url).href;
+const ld = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${SITE.url}/#org`,
+      name: 'শিখতে চাই',
+      alternateName: 'Shikhte Chai',
+      url: `${SITE.url}/`,
+      logo: { '@type': 'ImageObject', url: `${SITE.url}/brand/logo-800.png` },
+      sameAs: [SITE.youtube, SITE.facebook].filter(Boolean),
+      nonprofitStatus: 'Nonprofit',
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${home}#site`,
+      url: home,
+      name: t.siteName,
+      alternateName: t.siteNameLatin,
+      description: t.metaDescription,
+      inLanguage: lang === 'bn' ? 'bn-BD' : 'en',
+      publisher: { '@id': `${SITE.url}/#org` },
+      potentialAction: { '@type': 'SearchAction', target: { '@type': 'EntryPoint', urlTemplate: `${new URL(href(lang, 'videos'), SITE.url).href}?q={search_term_string}` }, 'query-input': 'required name=search_term_string' },
+    },
+  ],
+};
 ---
 <Base lang={lang} nav="home">
+  <JsonLd slot="head" data={[ld]} />
   <section class="wrap hero">
     <div class="hero-copy">
       <p class="eyebrow">{t.heroEyebrow}</p>
@@ -50,7 +79,9 @@ const latest = VIDEOS.filter((v) => (meta(v.id)?.date ?? '') >= yearAgo).slice(0
     </div>
     <a class="hero-card" id="hero-card" href={href(lang, `watch/${featured.id}`)}>
       <div class="vthumb" id="hero-thumb" style={`background:${fc.bg}`}>
-        <img id="hero-img" src={thumb(featured.id)} alt="" width="480" height="360" style="height:100%;object-fit:cover" fetchpriority="high" />
+        {/* No src in the HTML: the script below picks the video first, so only one image is downloaded. */}
+        <picture><source id="hero-avif" type="image/avif" sizes="(min-width: 1000px) 520px, 100vw" /><img id="hero-img" alt="" width="480" height="270" sizes="(min-width: 1000px) 520px, 100vw" style="height:100%;object-fit:cover" fetchpriority="high" /></picture>
+        <noscript><img src={thumb(featured.id)} alt="" width="480" height="270" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" /></noscript>
         <span class="vplay hero-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#0B6B63" /></svg></span>
       </div>
       <span class="hero-card-tag" id="hero-tag">{t.heroPick} · {fc[lang]}</span>
@@ -60,13 +91,17 @@ const latest = VIDEOS.filter((v) => (meta(v.id)?.date ?? '') >= yearAgo).slice(0
     <script is:inline>
       (function () {
         var d = JSON.parse(document.getElementById('hero-data').textContent);
+        var img = document.getElementById('hero-img');
         var last; try { last = localStorage.getItem('hero:last'); } catch (e) {}
         var pool = d.items.filter(function (x) { return x.id !== last; });
         var v = pool[Math.floor(Math.random() * pool.length)];
         try { localStorage.setItem('hero:last', v.id); } catch (e) {}
         document.getElementById('hero-card').href = v.href;
         document.getElementById('hero-thumb').style.background = v.bg;
-        document.getElementById('hero-img').src = 'https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg';
+        // The <source> is filled in first, so the browser picks AVIF before it starts any download.
+        if (v.avif) document.getElementById('hero-avif').srcset = v.avif;
+        img.srcset = v.set;
+        img.src = v.src;
         document.getElementById('hero-tag').textContent = d.pick + ' · ' + v.c;
         document.getElementById('hero-title').textContent = v.t;
       })();
@@ -100,7 +135,12 @@ const latest = VIDEOS.filter((v) => (meta(v.id)?.date ?? '') >= yearAgo).slice(0
             chips.forEach(function (c) {
               var on = c.getAttribute('data-cat') === cat;
               c.setAttribute('aria-pressed', on ? 'true' : 'false');
-              if (on && scroll) c.scrollIntoView({ inline: 'center', block: 'nearest' });
+              // Bring the chip into view inside its own row only. scrollIntoView() also scrolled the page, so on
+              // phones the home page jumped down to this section while it was loading.
+              if (on && scroll) {
+                var row = c.parentElement;
+                if (row.scrollWidth > row.clientWidth) row.scrollLeft += c.getBoundingClientRect().left - row.getBoundingClientRect().left - (row.clientWidth - c.offsetWidth) / 2;
+              }
             });
             panels.forEach(function (p) { p.hidden = p.getAttribute('data-panel') !== cat; });
           }
@@ -183,8 +223,8 @@ const latest = VIDEOS.filter((v) => (meta(v.id)?.date ?? '') >= yearAgo).slice(0
       </div>
       <div class="sci-grid">
         {science.map((c) => (
-          <a class="sci-card" href={href(lang, 'videos') + `?cat=${c.id}`} style={`background:${c.ink}`} data-ids={byCat(c.id).map((v) => v.id).join(',')}>
-            <img class="sci-bg" alt="" width="480" height="360" />
+          <a class="sci-card" href={href(lang, 'videos') + `?cat=${c.id}`} style={`background:${c.ink}`} data-thumbs={byCat(c.id).map((v) => thumb(v.id)).join(' ')}>
+            <img class="sci-bg" alt="" width="480" height="360" decoding="async" />
             <span class="sci-shade" aria-hidden="true"></span>
             <span class="sci-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={c.icon} /></svg></span>
             <span class="sci-text"><span class="sci-name">{c[lang]}</span><span class="sci-count">{t.videosCount(num(catCount(c.id), lang))}</span></span>
@@ -194,10 +234,10 @@ const latest = VIDEOS.filter((v) => (meta(v.id)?.date ?? '') >= yearAgo).slice(0
       <script is:inline>
         // A random video thumbnail behind each card, different on every visit.
         document.querySelectorAll('.sci-card').forEach(function (card) {
-          var ids = card.getAttribute('data-ids').split(',');
+          var thumbs = card.getAttribute('data-thumbs').split(' ');
           var img = card.querySelector('.sci-bg');
           img.addEventListener('load', function () { img.classList.add('on'); });
-          img.src = 'https://i.ytimg.com/vi/' + ids[Math.floor(Math.random() * ids.length)] + '/hqdefault.jpg';
+          img.src = thumbs[Math.floor(Math.random() * thumbs.length)];
         });
       </script>
     </div>

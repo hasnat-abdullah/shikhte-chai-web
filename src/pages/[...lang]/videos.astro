@@ -21,7 +21,7 @@ const cfg = {
   shownTpl: t.shownOf('{a}', '{b}'),
 };
 ---
-<Base lang={lang} path="videos" nav="videos" title={t.libTitle} description={t.libLead(num(total, lang))}>
+<Base lang={lang} path="videos" nav="videos" title={t.libTitle} description={t.libMeta(num(total, lang))}>
   <div class="wrap lib">
     <div class="lib-head">
       <h1>{t.libTitle}</h1>

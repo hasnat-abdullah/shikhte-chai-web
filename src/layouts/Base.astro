@@ -19,11 +19,13 @@ interface Props {
   noindex?: boolean;
   /** A page that exists in one language only (no language switch, no alternate links). */
   solo?: boolean;
+  ogType?: 'website' | 'video.other';
 }
-const { lang, path = '', title, description, image, imageSize = [1200, 630], nav = '', noindex = false, solo = false } = Astro.props;
+const { lang, path = '', title, description, image, imageSize = [1200, 630], nav = '', noindex = false, solo = false, ogType = 'website' } = Astro.props;
 const t = tr(lang);
 const other: Lang = lang === 'bn' ? 'en' : 'bn';
-const pageTitle = title ? `${title} · ${t.siteName}` : `${t.siteName} · ${t.tagline}`;
+// The site name is left off long titles, so search results show the part that matters.
+const pageTitle = title ? ([...title].length > 55 ? title : `${title} · ${t.siteName}`) : `${t.siteName} · ${t.tagline}`;
 const desc = description ?? t.metaDescription;
 const canonical = new URL(href(lang, path), SITE.url).href;
 const alt = {
@@ -42,15 +44,22 @@ const icon = (d: string) => d;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={desc} />
-    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-video-preview:-1'} />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="theme-color" content="#0b6b63" />
+    <meta name="color-scheme" content="light" />
+    <script is:inline>document.documentElement.classList.add('js')</script>
+    <link rel="preconnect" href="https://i.ytimg.com" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    {/* Chrome and Edge load a link in the background while the pointer rests on it, so the next page opens instantly. */}
+    <script is:inline type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/admin/*"}}]},"eagerness":"moderate"}]}</script>
     <link rel="canonical" href={canonical} />
     {!solo && <link rel="alternate" hreflang="bn" href={alt.bn} />}
     {!solo && <link rel="alternate" hreflang="en" href={alt.en} />}
     {!solo && <link rel="alternate" hreflang="x-default" href={alt.bn} />}
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={t.siteName} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={desc} />
@@ -63,6 +72,7 @@ const icon = (d: string) => d;
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={desc} />
     <meta name="twitter:image" content={ogImage} />
+    <slot name="head" />
   </head>
   <body>
     <a class="skip" href="#main">{t.nav.skip}</a>

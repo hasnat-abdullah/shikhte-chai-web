@@ -36,8 +36,10 @@ const cfg = {
   contact: href(lang, 'contact'),
 };
 const opts = (list: { value: string; bn: string; en: string }[]) => list.map((o) => ({ value: o.value, label: o[lang] }));
+const dirOn = Boolean(SITE.supabase.url && SITE.supabase.key);
 ---
 <Base lang={lang} path="professionals" nav="pros" title={p.title} description={p.lead}>
+  {dirOn && <link slot="head" rel="preconnect" href={new URL(SITE.supabase.url).origin} crossorigin />}
   <div class="wrap dir">
     <header class="head">
       <div>
@@ -127,7 +129,8 @@ const opts = (list: { value: string; bn: string; en: string }[]) => list.map((o)
           </label>
         </div>
         <div class="active-filters" id="d-active" hidden></div>
-        <div id="d-list" class="pcards"></div>
+        {/* Placeholders are in the HTML (not added by the script) so the section below does not jump when listings load. */}
+        <div id="d-list" class="pcards">{dirOn && <><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></>}</div>
         <div id="d-more" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:8px" hidden>
           <button type="button" class="btn btn-outline" id="d-more-btn">{p.more}</button>
           <span class="muted" id="d-progress" style="font-size:14px"></span>
