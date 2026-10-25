@@ -32,9 +32,10 @@ jobs:
           PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
       - run: npm run check
       - if: github.event_name != 'pull_request'
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: dist
+          include-hidden-files: true # v4+ skips dotfiles; needed for /.well-known/security.txt
 
   deploy:
     if: github.event_name != 'pull_request'
