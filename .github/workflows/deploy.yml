@@ -35,6 +35,7 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         with:
           path: dist
+          include-hidden-files: true # v4+ skips dotfiles; needed for /.well-known/security.txt
 
   deploy:
     if: github.event_name != 'pull_request'
